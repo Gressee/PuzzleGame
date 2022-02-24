@@ -7,6 +7,6 @@ public class TileEmpty : TileBase
 {
     public virtual void Init(Vector2Int gridPos)
     {
-        base.Init(gridPos, TileType.Redirect, Layer.Tiles);
+        base.Init(gridPos, TileType.Empty, Layer.Tiles);
     }
 }

@@ -83,8 +83,7 @@ namespace Shared.Levels
                 // Tiles
                 new List<TileStartCondition>()
                 {
-                    new TileStartCondition(2, 2, true, TileType.Redirect, Direction.Up),
-                    new TileStartCondition(2, 5, true, TileType.PieceTarget, Direction.Up)
+                    new TileStartCondition(2, 2, true, TileType.Redirect, Direction.Down),
                 },
                 // Pieces
                 new List<PieceStartCondition>()

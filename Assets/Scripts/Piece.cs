@@ -21,8 +21,11 @@ public class Piece : MonoBehaviour
     // This is always the position on the grid the piece has after completing the 
     // current turn
     Vector2Int gridPos = new Vector2Int(-1,-1);
+    // This is the target position of the last turn
+    Vector2Int prevGridPos = new Vector2Int(-1, -1);
 
-    Direction movingDir;
+    Direction movingDir = Direction.None;
+    Direction prevMovingDir = Direction.None;
 
     public void Init(Direction dir, Vector2Int? gridPos = null, Vector2? offGridPos = null)
     {
@@ -86,19 +89,62 @@ public class Piece : MonoBehaviour
     {
         currentTurnActions = new List<PieceTurn>();
         
-        Vector2Int newGridPos = new Vector2Int(gridPos.x + 1, gridPos.y);
+        Vector2Int newGridPos = gridPos;
+        Direction newMovingDir = movingDir;
         
+        /*
         currentTurnActions.Add(new PieceTranslate(
             GameManager.Instance.TurnTime,
             gridPos, newGridPos
         ));
+        */
 
-        currentTurnActions.Add(new PieceRotate(
-            GameManager.Instance.TurnTime,
-            Random.Range(0, 360), Random.Range(0, 360)
-        ));
+        // 'gridPos' is the position the piece is currently on
+        // so this is the tile the piece is on
+        TileBase tile = GameManager.Instance.GetTile(gridPos);
 
-        gridPos = new Vector2Int(newGridPos.x, newGridPos.y);
+        if (tile == null)
+        {
+            Debug.LogError("Tile the piece is on is null");
+            return;
+        }
+
+        switch (tile.Type)
+        {
+            // EMPTY TILE -> just move in same direction
+            case TileType.Empty:
+                newGridPos = DirMethods.NextPosInDir(movingDir, gridPos);
+                
+                // Animation
+                currentTurnActions.Add(new PieceTranslate(
+                    GameManager.Instance.TurnTime, gridPos, newGridPos
+                ));
+            break;
+
+            // REDIRECT TILE -> rotate and translate in one move
+            case TileType.Redirect:
+                newMovingDir = ((TileRedirect)tile).RedirectionDir;
+                newGridPos = DirMethods.NextPosInDir(newMovingDir, gridPos);
+                
+                // Animation
+                currentTurnActions.Add(new PieceTranslate(
+                    GameManager.Instance.TurnTime, gridPos, newGridPos
+                ));
+
+                currentTurnActions.Add(new PieceRotate(
+                    GameManager.Instance.TurnTime/7,
+                    DirMethods.DirInAngle(movingDir),
+                    DirMethods.DirInAngle(newMovingDir)
+                ));
+            break;
+        }
+
+        // Set the positions for the new turn
+        prevGridPos = gridPos;
+        gridPos = newGridPos;
+
+        prevMovingDir = movingDir;
+        movingDir = newMovingDir;
     }
 
 
@@ -136,6 +182,14 @@ abstract class PieceTurn
         gameObject.transform.localScale = scale;
         */
     }
+
+    public virtual void SetTargetValues(GameObject gameObject)
+    {
+        // This can be used to make sure the values on the 
+        // unity gameObject are exactly the target ones
+        // and not a bit more or less because calculations 
+        // with the frame time can have slightly different results
+    }
 }
 
 
@@ -153,9 +207,23 @@ class PieceTranslate: PieceTurn
 
     public override void Update(GameObject gameObject)
     {
-        // Call this every frame
-        Vector2 dir = targetPos - startPos;
-        Vector3 p = startPos + dir * (Time.time - startTime)/duration;
+        // Check if the duration time is already reched
+        if (Time.time - startTime < duration)
+        {
+            Vector2 dir = targetPos - startPos;
+            Vector3 p = startPos + dir * (Time.time - startTime)/duration;
+            p.z = Layer.Pieces;
+            gameObject.transform.position = p;
+        }
+        else
+        {
+            SetTargetValues(gameObject);
+        }
+    }
+
+    public override void SetTargetValues(GameObject gameObject)
+    {
+        Vector3 p = targetPos;
         p.z = Layer.Pieces;
         gameObject.transform.position = p;
     }
@@ -224,9 +292,37 @@ class PieceRotate: PieceTurn
 
     public override void Update(GameObject gameObject)
     {
-        float rotDir = targetRot - startRot;
-        float r = startRot + rotDir * (Time.time - startTime)/duration;
-        gameObject.transform.eulerAngles = new Vector3(0, 0, r);
+        // Check if the duration time is already reched
+        if (Time.time - startTime < duration)
+        {   
+            // TODO Fix that rotation can loop arround For example from 0 to 270
+            /*
+            float rotDir = targetRot - startRot;
+            float r = startRot + rotDir * (Time.time - startTime)/duration;
+            gameObject.transform.eulerAngles = new Vector3(0, 0, r);
+            */
+            float angleToTurn;
+            if (Mathf.Abs(targetRot-startRot) > 180)
+            {
+                angleToTurn = -(360 - (targetRot-startRot));
+            }
+            else
+            {
+                angleToTurn = targetRot-startRot;
+            }
+            Debug.Log(angleToTurn);
+            float newAngle = angleToTurn/duration * (Time.time - startTime);
+            gameObject.transform.eulerAngles = new Vector3(0, 0, newAngle);
+        }
+        else
+        {
+            SetTargetValues(gameObject);
+        }
+    }
+    
+    public override void SetTargetValues(GameObject gameObject)
+    {
+        gameObject.transform.eulerAngles = new Vector3(0, 0, targetRot);
     }
 }
 

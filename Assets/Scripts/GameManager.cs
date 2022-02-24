@@ -166,6 +166,7 @@ public class GameManager : Singleton<GameManager>
         {
             return tiles[pos];
         }
+        Debug.Log(tiles);
         return null;
     }
 

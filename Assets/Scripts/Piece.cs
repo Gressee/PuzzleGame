@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Shared.Defines;
+using Shared.DirUtils;
 
 public class Piece : MonoBehaviour
 {
@@ -113,7 +114,7 @@ public class Piece : MonoBehaviour
         {
             // EMPTY TILE -> just move in same direction
             case TileType.Empty:
-                newGridPos = DirMethods.NextPosInDir(movingDir, gridPos);
+                newGridPos = DirUtils.NextPosInDir(movingDir, gridPos);
                 
                 // Animation
                 currentTurnActions.Add(new PieceTranslate(
@@ -124,7 +125,7 @@ public class Piece : MonoBehaviour
             // REDIRECT TILE -> rotate and translate in one move
             case TileType.Redirect:
                 newMovingDir = ((TileRedirect)tile).RedirectionDir;
-                newGridPos = DirMethods.NextPosInDir(newMovingDir, gridPos);
+                newGridPos = DirUtils.NextPosInDir(newMovingDir, gridPos);
                 
                 // Animation
                 currentTurnActions.Add(new PieceTranslate(
@@ -133,8 +134,8 @@ public class Piece : MonoBehaviour
 
                 currentTurnActions.Add(new PieceRotate(
                     GameManager.Instance.TurnTime/7,
-                    DirMethods.DirInAngle(movingDir),
-                    DirMethods.DirInAngle(newMovingDir)
+                    DirUtils.DirInAngle(movingDir),
+                    DirUtils.DirInAngle(newMovingDir)
                 ));
             break;
         }

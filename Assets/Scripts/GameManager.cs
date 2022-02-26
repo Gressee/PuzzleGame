@@ -9,7 +9,7 @@ public class GameManager : Singleton<GameManager>
 {
 
     [SerializeField]
-    TileBase tileEmptyPrefab, tileRedirectPrefab;
+    TileBase tileEmptyPrefab, tileRedirectPrefab, tilePieceTargetPrefab;
 
     [SerializeField]
     Piece piecePrefab;
@@ -141,6 +141,12 @@ public class GameManager : Singleton<GameManager>
             case TileType.Empty:
                 tile = (TileEmpty)Instantiate(tileEmptyPrefab, Vector3.zero, Quaternion.identity);
                 ((TileEmpty)tile).Init(pos);
+                tiles.Add(pos, tile);    
+            break;
+            
+            case TileType.PieceTarget:
+                tile = (TilePieceTarget)Instantiate(tilePieceTargetPrefab, Vector3.zero, Quaternion.identity);
+                ((TilePieceTarget)tile).Init(pos, dir);
                 tiles.Add(pos, tile);    
             break;
 

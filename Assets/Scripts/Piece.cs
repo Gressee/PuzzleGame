@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Shared.Defines;
+using Shared.DirUtils;
 
 public class Piece : MonoBehaviour
 {
@@ -113,7 +114,7 @@ public class Piece : MonoBehaviour
         {
             // EMPTY TILE -> just move in same direction
             case TileType.Empty:
-                newGridPos = DirMethods.NextPosInDir(movingDir, gridPos);
+                newGridPos = DirUtils.NextPosInDir(movingDir, gridPos);
                 
                 // Animation
                 currentTurnActions.Add(new PieceTranslate(
@@ -121,10 +122,23 @@ public class Piece : MonoBehaviour
                 ));
             break;
 
+            // PIECE TARGET TILE -> Just stay here if this is the correct direction when not just go on
+            case TileType.PieceTarget:
+                if (((TilePieceTarget)tile).pieceTargetDir != movingDir)
+                {
+                    newGridPos = DirUtils.NextPosInDir(movingDir, gridPos);
+                
+                    // Animation
+                    currentTurnActions.Add(new PieceTranslate(
+                        GameManager.Instance.TurnTime, gridPos, newGridPos
+                    ));
+                }
+            break;
+
             // REDIRECT TILE -> rotate and translate in one move
             case TileType.Redirect:
                 newMovingDir = ((TileRedirect)tile).RedirectionDir;
-                newGridPos = DirMethods.NextPosInDir(newMovingDir, gridPos);
+                newGridPos = DirUtils.NextPosInDir(newMovingDir, gridPos);
                 
                 // Animation
                 currentTurnActions.Add(new PieceTranslate(
@@ -133,8 +147,8 @@ public class Piece : MonoBehaviour
 
                 currentTurnActions.Add(new PieceRotate(
                     GameManager.Instance.TurnTime/7,
-                    DirMethods.DirInAngle(movingDir),
-                    DirMethods.DirInAngle(newMovingDir)
+                    DirUtils.DirInAngle(movingDir),
+                    DirUtils.DirInAngle(newMovingDir)
                 ));
             break;
         }
@@ -310,7 +324,6 @@ class PieceRotate: PieceTurn
             {
                 angleToTurn = targetRot-startRot;
             }
-            Debug.Log(angleToTurn);
             float newAngle = angleToTurn/duration * (Time.time - startTime);
             gameObject.transform.eulerAngles = new Vector3(0, 0, newAngle);
         }

@@ -9,7 +9,7 @@ public class GameManager : Singleton<GameManager>
 {
 
     [SerializeField]
-    TileBase tileEmptyPrefab, tileRedirectPrefab;
+    TileBase tileEmptyPrefab, tileRedirectPrefab, tilePieceTargetPrefab;
 
     [SerializeField]
     Piece piecePrefab;
@@ -27,7 +27,7 @@ public class GameManager : Singleton<GameManager>
     // How much time has passed since the last turn has been started
     float timeSinceLastTurn = 0.0f;
 
-
+    public Level currentLevel {get; protected set;}
 
     Dictionary<Vector2Int, TileBase> tiles = new Dictionary<Vector2Int, TileBase>();
 
@@ -72,21 +72,21 @@ public class GameManager : Singleton<GameManager>
 
         
         // SPAWN LEVEL
-        // load
-        Level lvl = new Levels().levels[lvlNum];
+        currentLevel = null; // Incase lvl fails to load bellow
+        currentLevel = new AllLevels().levels[lvlNum];
 
 
         // Spawn empty tiles
-        for (int x = 0; x < lvl.gridWidth; x++)
+        for (int x = 0; x < currentLevel.gridWidth; x++)
         {
-            for (int y = 0; y < lvl.gridHeight; y ++)
+            for (int y = 0; y < currentLevel.gridHeight; y ++)
             {
                 SpawnTile(false, TileType.Empty, new Vector2Int(x, y), Direction.None);
             }
         }
 
         // Spawn special tiles
-        foreach (var t in lvl.tiles)
+        foreach (var t in currentLevel.tiles)
         {
             if (t.onGridAtStart)
             {
@@ -99,7 +99,7 @@ public class GameManager : Singleton<GameManager>
         }
 
         // Spawn Pieces
-        foreach (var p in lvl.pieces)
+        foreach (var p in currentLevel.pieces)
         {
             if (p.onGridAtStart)
             {
@@ -143,6 +143,12 @@ public class GameManager : Singleton<GameManager>
                 ((TileEmpty)tile).Init(pos);
                 tiles.Add(pos, tile);    
             break;
+            
+            case TileType.PieceTarget:
+                tile = (TilePieceTarget)Instantiate(tilePieceTargetPrefab, Vector3.zero, Quaternion.identity);
+                ((TilePieceTarget)tile).Init(pos, dir);
+                tiles.Add(pos, tile);    
+            break;
 
             case TileType.Redirect:
                 tile = (TileRedirect)Instantiate(tileRedirectPrefab, Vector3.zero, Quaternion.identity);
@@ -166,7 +172,6 @@ public class GameManager : Singleton<GameManager>
         {
             return tiles[pos];
         }
-        Debug.Log(tiles);
         return null;
     }
 

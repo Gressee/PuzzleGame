@@ -8,7 +8,7 @@ namespace Shared.Levels
 
     // This defines stuff that is uses when spawning the level
     // Applies to all tiles
-    class TileStartCondition
+    public class TileStartCondition
     {
         public Vector2Int pos {get; private set;}
         public bool onGridAtStart {get; private set;}
@@ -26,7 +26,7 @@ namespace Shared.Levels
 
     // This defines stuff that is uses when spawning the level
     // Applies to all pieces
-    class PieceStartCondition
+    public class PieceStartCondition
     {
         public Vector2Int pos {get; private set;}
         public bool onGridAtStart {get; private set;}
@@ -41,7 +41,7 @@ namespace Shared.Levels
     }
 
 
-    class Level
+    public class Level
     {
         public int gridWidth {get; protected set;}
         public int gridHeight {get; protected set;}
@@ -70,7 +70,7 @@ namespace Shared.Levels
 
     //// DEFINES OF ALL LEVELS ////
 
-    class Levels
+    public class AllLevels
     {
         // The key of this dict is the level number
         public Dictionary<int, Level> levels = new Dictionary<int, Level>()

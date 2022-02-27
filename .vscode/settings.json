@@ -56,6 +56,7 @@
         "Packages/":true,
         "Assets/Prefabs/":true,
         "Assets/Scenes/":true,
-        "Assets/Textures/":true
+        "Assets/Textures/":true,
+        "Assets/TextMesh Pro/":true
     }
 }

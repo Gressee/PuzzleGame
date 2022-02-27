@@ -15,10 +15,9 @@ namespace Shared.Levels
         public TileType type {get; private set;}
         public Direction dir  {get; private set;}
 
-        public TileStartCondition(int x, int y, bool isOnGridAtStart, TileType tileType, Direction direction)
+        public TileStartCondition(int x, int y, TileType tileType, Direction direction)
         {
             pos = new Vector2Int(x, y);
-            onGridAtStart = isOnGridAtStart;
             type = tileType;
             dir = direction;
         }
@@ -28,14 +27,21 @@ namespace Shared.Levels
     // Applies to all pieces
     public class PieceStartCondition
     {
-        public Vector2Int pos {get; private set;}
-        public bool onGridAtStart {get; private set;}
+        public Vector2Int? gridPos {get; private set;}
+        public bool replaceable {get; private set;}
         public Direction dir  {get; private set;}
 
-        public PieceStartCondition(int x, int y, bool isOnGridAtStart, Direction direction)
+        public PieceStartCondition(int gridX, int gridY, bool replaceable, Direction direction)
         {
-            pos = new Vector2Int(x, y);
-            onGridAtStart = isOnGridAtStart;
+            this.replaceable = replaceable;
+            if (replaceable == false)
+            {
+                gridPos = new Vector2Int(gridX, gridY); 
+            }
+            else
+            {
+                gridPos = null;
+            }
             dir = direction;
         }
     }
@@ -83,12 +89,16 @@ namespace Shared.Levels
                 // Tiles
                 new List<TileStartCondition>()
                 {
-                    new TileStartCondition(2, 2, true, TileType.Redirect, Direction.Down),
+                    new TileStartCondition(2, 2, TileType.Redirect, Direction.Right),
+                    new TileStartCondition(8, 2, TileType.Redirect, Direction.Up),
+                    new TileStartCondition(8, 7, TileType.Redirect, Direction.Left),
+                    new TileStartCondition(2, 7, TileType.Redirect, Direction.Down),
                 },
                 // Pieces
                 new List<PieceStartCondition>()
                 {
-                    new PieceStartCondition(1, 2, true, Direction.Right)
+                    // new PieceStartCondition(1, 2, true, Direction.Right)
+                    new PieceStartCondition(1, 2, false, Direction.Up),
                 }
             )}
 

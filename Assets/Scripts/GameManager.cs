@@ -14,7 +14,7 @@ public class GameManager : Singleton<GameManager>
     [SerializeField]
     Piece piecePrefab;
 
-    public GameState CurrentGameState {get; protected set;} = GameState.Execute;
+    public GameState CurrentGameState {get; protected set;} = GameState.Building;
 
 
     // A Turn is for example when a piece translates from one to the next tile
@@ -25,7 +25,7 @@ public class GameManager : Singleton<GameManager>
     public int CurrentTurn {get; protected set;} = 0;
 
     // How much time has passed since the last turn has been started
-    float timeSinceLastTurn = 0.0f;
+    public float timeSinceLastTurn {get; protected set;} = 0.0f;
 
     public Level currentLevel {get; protected set;}
 
@@ -75,6 +75,7 @@ public class GameManager : Singleton<GameManager>
         currentLevel = null; // Incase lvl fails to load bellow
         currentLevel = new AllLevels().levels[lvlNum];
 
+        int offGridPieces = 0;
 
         // Spawn empty tiles
         for (int x = 0; x < currentLevel.gridWidth; x++)
@@ -88,26 +89,27 @@ public class GameManager : Singleton<GameManager>
         // Spawn special tiles
         foreach (var t in currentLevel.tiles)
         {
-            if (t.onGridAtStart)
-            {
-                SpawnTile(true, t.type, t.pos, t.dir);
-            }
-            else
-            {
-                // TODO handle when tile is not on grid
-            }
+            SpawnTile(true, t.type, t.pos, t.dir);
         }
 
         // Spawn Pieces
+        // Pices that are of grid get places in a row below the grid
         foreach (var p in currentLevel.pieces)
         {
-            if (p.onGridAtStart)
+            if (p.replaceable == false && p.gridPos != null)
             {
-                SpawnPiece(p.pos, p.dir);
+                SpawnPiece(p.replaceable, p.gridPos.GetValueOrDefault(new Vector2Int(-1, -1)), p.dir);
             }
-            else
+            else if (p.replaceable == true && p.gridPos == null)
+            {   
+                int x = offGridPieces % currentLevel.gridWidth;
+                int y = -2 - Mathf.FloorToInt(offGridPieces / currentLevel.gridWidth);
+                Vector2Int pos = new Vector2Int(x, y);
+                SpawnPiece(p.replaceable, pos, p.dir);
+            }
+            else if (p.replaceable == false && p.gridPos == null)
             {
-                // TODO handle when piece is not on grid
+                Debug.LogError("Piece is maked NOT REPLACEABLE in the level file but given position is NULL");
             }
         }
     }
@@ -159,12 +161,25 @@ public class GameManager : Singleton<GameManager>
 
     }
 
-    void SpawnPiece(Vector2Int pos, Direction dir)
+
+    void SpawnPiece(bool replaceable, Vector2Int pos, Direction dir)
     {
+        // 'pos' is either the grid pos or the pos outside the grid of the pices
+        // what depends on the value of 'replaceable'
+
         Piece p = Instantiate(piecePrefab, Vector3.zero, Quaternion.identity);
-        p.Init(dir, pos);
+        p.Init(replaceable, pos, dir);
         pieces.Add(p);
     }
+
+
+    public void SetGameState(GameState gameState)
+    {
+        // TODO Implement the chnage of game states in game manager
+        CurrentGameState = gameState;
+    }
+
+    //// OTHERS ////
 
     public TileBase GetTile(Vector2Int pos)
     {
@@ -173,6 +188,27 @@ public class GameManager : Singleton<GameManager>
             return tiles[pos];
         }
         return null;
+    }
+
+    public bool IsGridPosOccupied(Vector2Int pos)
+    {
+        // Check the tiles
+        if (tiles.ContainsKey(pos))
+        {
+            return false;
+        }
+
+        // Check Pieces
+        foreach(var pic in pieces)
+        {
+            // When the tile is not on the grid girdPos would be null
+            if (pic.gridPos == pos)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }

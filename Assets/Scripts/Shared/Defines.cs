@@ -39,5 +39,6 @@ namespace Shared.Defines
     {
         Building,
         Execute,
+        ExecutePause
     }
 }

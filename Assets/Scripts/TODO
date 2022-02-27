@@ -1,0 +1,7 @@
+
+Finish dragging for pieces
+
+Make gridPos in Piece null when not on grid (maybe use this as the indiecator 
+if piece is on grid)
+
+Create suppot for draggable tiles that the user can place like pieces

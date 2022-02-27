@@ -6,65 +6,66 @@ using Shared.DirUtils;
 
 public class Piece : MonoBehaviour
 {
-    // A pice can be placed on the grid then its moving when the game is executing
-    // If the piece still needs to get placed on the grid by the player then it's not
-    // moving on execution
-    bool onGrid;
-
+    int currentTurnNum = -1;
+    List<PieceTurn> currentTurnActions = new List<PieceTurn>();
+    
     // If the piece can be 
     bool replaceable;
+    
+    // If the piece is REPLACEABLE then this is the position when the pice is outside the grid
+    // If the piece is NOT REPLACEABLE then this is the grid position 
+    // where the piece is before the game execution starts
+    Vector2Int startPos;
 
-    int currentTurnNum = -1;
+    // is NULL when the Pieces isn NOT on the GRID
+    // This is always the position on the grid the piece has after completing the current turn
+    public Vector2Int? gridPos {get; protected set;}
 
-    List<PieceTurn> currentTurnActions = new List<PieceTurn>();
 
+    bool isDraged = false;
 
-    // This is always the position on the grid the piece has after completing the 
-    // current turn
-    Vector2Int gridPos = new Vector2Int(-1,-1);
+    
     // This is the target position of the last turn
+    // This is needed for the rotation tile so pices doesn't spinn indefinetly
     Vector2Int prevGridPos = new Vector2Int(-1, -1);
 
     Direction movingDir = Direction.None;
     Direction prevMovingDir = Direction.None;
 
-    public void Init(Direction dir, Vector2Int? gridPos = null, Vector2? offGridPos = null)
+    public void Init(bool isReplaceable, Vector2Int pos, Direction dir)
     {
         // Has to be called after creatig object
+
+        // 'pos' argument is either the the pos outside (is replaceable) the grid 
+        // or inside the grid (not replaceable)
+
+        // TODO Remake this method
         
         movingDir = dir;
+        replaceable = isReplaceable;
 
-        // DON'T set 'gridPos' and 'offGridPos'
-        if (gridPos != null && offGridPos != null)
+        Debug.Log(dir);
+
+        if (replaceable)
         {
-            Debug.LogError("Piece.Init should only use position one argument");
+            gridPos = null;
+            startPos = pos;
+            SetWorldCoords(pos.x, pos.y);
+        }
+        else
+        {
+            gridPos = pos;
+            startPos = pos;
+            SetWorldCoords(pos.x, pos.y);
         }
 
-        // If 'gridPos' is given it assumes that the player cant 
-        // drag the piece arround and replace it
-        if (gridPos != null)
-        {
-            this.gridPos = gridPos.GetValueOrDefault(new Vector2Int(-1,-1));
-            SetWorldCoords(this.gridPos.x, this.gridPos.y);
-
-            replaceable = false;
-            onGrid = true;
-        }
-
-        if (offGridPos != null)
-        {
-            Vector2 p = offGridPos.GetValueOrDefault(new Vector2(-1, -1));
-            SetWorldCoords(p.x, p.y);
-
-            replaceable = true;
-            onGrid = false;
-        }
     }
 
 
     void Update()
     {
-        if (GameManager.Instance.CurrentGameState == GameState.Execute)
+        // Execute movement
+        if (gridPos != null && GameManager.Instance.CurrentGameState == GameState.Execute)
         {
             // Check if the GameManager is on the next turn
             // If yes calculate the next turn
@@ -83,6 +84,20 @@ public class Piece : MonoBehaviour
                 }
             }
         }
+
+        // Check if drag should be ended
+        if (isDraged && Input.GetMouseButtonUp(0))
+        {
+            EndDrag();
+        }
+    }
+
+    void OnMouseDown()
+    {
+        if (replaceable && GameManager.Instance.CurrentGameState == GameState.Building)
+        {
+            StartDrag();
+        }
     }
 
 
@@ -90,19 +105,18 @@ public class Piece : MonoBehaviour
     {
         currentTurnActions = new List<PieceTurn>();
         
-        Vector2Int newGridPos = gridPos;
+        // When outside grid then no turn needs the be calculated
+        if (gridPos == null) return;
+        
+        // Only because the var name is shorter
+        Vector2Int currentGridPos = gridPos.GetValueOrDefault(new Vector2Int(-1, -1));
+        
+        Vector2Int newGridPos = currentGridPos;
         Direction newMovingDir = movingDir;
         
-        /*
-        currentTurnActions.Add(new PieceTranslate(
-            GameManager.Instance.TurnTime,
-            gridPos, newGridPos
-        ));
-        */
-
-        // 'gridPos' is the position the piece is currently on
+        // 'currentGridPos' is the position the piece is currently on
         // so this is the tile the piece is on
-        TileBase tile = GameManager.Instance.GetTile(gridPos);
+        TileBase tile = GameManager.Instance.GetTile(currentGridPos);
 
         if (tile == null)
         {
@@ -114,11 +128,11 @@ public class Piece : MonoBehaviour
         {
             // EMPTY TILE -> just move in same direction
             case TileType.Empty:
-                newGridPos = DirUtils.NextPosInDir(movingDir, gridPos);
+                newGridPos = DirUtils.NextPosInDir(movingDir, currentGridPos);
                 
                 // Animation
                 currentTurnActions.Add(new PieceTranslate(
-                    GameManager.Instance.TurnTime, gridPos, newGridPos
+                    GameManager.Instance.TurnTime, currentGridPos, newGridPos
                 ));
             break;
 
@@ -126,11 +140,11 @@ public class Piece : MonoBehaviour
             case TileType.PieceTarget:
                 if (((TilePieceTarget)tile).pieceTargetDir != movingDir)
                 {
-                    newGridPos = DirUtils.NextPosInDir(movingDir, gridPos);
+                    newGridPos = DirUtils.NextPosInDir(movingDir, currentGridPos);
                 
                     // Animation
                     currentTurnActions.Add(new PieceTranslate(
-                        GameManager.Instance.TurnTime, gridPos, newGridPos
+                        GameManager.Instance.TurnTime, currentGridPos, newGridPos
                     ));
                 }
             break;
@@ -138,11 +152,11 @@ public class Piece : MonoBehaviour
             // REDIRECT TILE -> rotate and translate in one move
             case TileType.Redirect:
                 newMovingDir = ((TileRedirect)tile).RedirectionDir;
-                newGridPos = DirUtils.NextPosInDir(newMovingDir, gridPos);
+                newGridPos = DirUtils.NextPosInDir(newMovingDir, currentGridPos);
                 
                 // Animation
                 currentTurnActions.Add(new PieceTranslate(
-                    GameManager.Instance.TurnTime, gridPos, newGridPos
+                    GameManager.Instance.TurnTime, currentGridPos, newGridPos
                 ));
 
                 currentTurnActions.Add(new PieceRotate(
@@ -154,16 +168,43 @@ public class Piece : MonoBehaviour
         }
 
         // Set the positions for the new turn
-        prevGridPos = gridPos;
+        gridPos = currentGridPos;
+        prevGridPos = gridPos.GetValueOrDefault(new Vector2Int(-1, -1));
         gridPos = newGridPos;
+        
+        Debug.Log(movingDir);
 
         prevMovingDir = movingDir;
         movingDir = newMovingDir;
     }
 
 
+    //// DRAG METHODS ////
+
+    void StartDrag()
+    {
+
+    }
+
+    void WhileDrag()
+    {
+
+    }
+
+    void EndDrag()
+    {
+        // TODO call this from the GameManager before the Game Execute gets 
+        // started so all pices have a well defined place
+    }
+
+
+    //// OTHER ////
+
     void SetWorldCoords(float x, float y)
     {
+        // TODO Make that this method accepts the position, rotation, and scale 
+        // so that the 'PieceTurn' Classes can use this Method instead
+
         // Needed to ensure that the z coord is always the layer of the object
         transform.position = new Vector3(x, y, Layer.Pieces);
     }
@@ -180,21 +221,25 @@ abstract class PieceTurn
     protected float duration;
     protected float startTime;
 
+    // TODO all derived classes should not interact with the gameobject transform
+    // directly and instead use the method in the piece call for manipulation the
+    // transform because of layers ...
+    // (see todo in piece)
+
     public PieceTurn(float duration)
     {
-        startTime = Time.time;
         this.duration = duration;
+        // Because this animation starts always at the beginning of a turn
+        startTime = GameManager.Instance.timeSinceLastTurn;
     }
 
     public virtual void Update(GameObject gameObject)
     {
         // REMEMBER TO CALL THIS TO ACUTALLY UPDATE THE GAMEOBJECT
-        // Update GameObject like this
-        /*
-        gameObject.transform.position = pos;
-        gameObject.transform.eulerAngles = rot; // TODO Check if this works 
-        gameObject.transform.localScale = scale;
-        */
+
+        // Use:
+        //  (GameManager.Instance.timeSinceLastTurn - startTime)
+        // to get how much time has passed since the start of the turn
     }
 
     public virtual void SetTargetValues(GameObject gameObject)
@@ -212,7 +257,6 @@ class PieceTranslate: PieceTurn
 
     Vector2 startPos, targetPos;
 
-    // TODO finish this class
     public PieceTranslate(float duration, Vector2 startPos, Vector2 targetPos) : base(duration)
     {   
         this.startPos = startPos;
@@ -222,10 +266,10 @@ class PieceTranslate: PieceTurn
     public override void Update(GameObject gameObject)
     {
         // Check if the duration time is already reched
-        if (Time.time - startTime < duration)
+        if (GameManager.Instance.timeSinceLastTurn - startTime < duration)
         {
             Vector2 dir = targetPos - startPos;
-            Vector3 p = startPos + dir * (Time.time - startTime)/duration;
+            Vector3 p = startPos + dir * (GameManager.Instance.timeSinceLastTurn - startTime)/duration;
             p.z = Layer.Pieces;
             gameObject.transform.position = p;
         }
@@ -264,7 +308,7 @@ class PieceTeleport: PieceTurn
     public override void Update(GameObject gameObject)
     {
         // Getting smaller
-        if (Time.time -  startTime < duration/2)
+        if (GameManager.Instance.timeSinceLastTurn -  startTime < duration/2)
         {
             if (!setStartPos)
             {
@@ -274,7 +318,7 @@ class PieceTeleport: PieceTurn
                 gameObject.transform.position = p;
             }
             Vector2 scaleDir = minScale - maxScale;
-            gameObject.transform.localScale = maxScale + scaleDir * (Time.time - startTime)/(duration/2);
+            gameObject.transform.localScale = maxScale + scaleDir * (GameManager.Instance.timeSinceLastTurn - startTime)/(duration/2);
         }
         // Getting bigger again
         else
@@ -287,7 +331,7 @@ class PieceTeleport: PieceTurn
                 gameObject.transform.position = p;
             }
             Vector2 scaleDir = maxScale - minScale;
-            gameObject.transform.localScale = minScale + scaleDir * (Time.time - startTime - duration/2)/(duration/2);
+            gameObject.transform.localScale = minScale + scaleDir * (GameManager.Instance.timeSinceLastTurn - startTime - duration/2)/(duration/2);
         }
 
     }
@@ -307,12 +351,11 @@ class PieceRotate: PieceTurn
     public override void Update(GameObject gameObject)
     {
         // Check if the duration time is already reched
-        if (Time.time - startTime < duration)
+        if (GameManager.Instance.timeSinceLastTurn - startTime < duration)
         {   
-            // TODO Fix that rotation can loop arround For example from 0 to 270
             /*
             float rotDir = targetRot - startRot;
-            float r = startRot + rotDir * (Time.time - startTime)/duration;
+            float r = startRot + rotDir * (GameManager.Instance.timeSinceLastTurn - startTime)/duration;
             gameObject.transform.eulerAngles = new Vector3(0, 0, r);
             */
             float angleToTurn;
@@ -324,7 +367,7 @@ class PieceRotate: PieceTurn
             {
                 angleToTurn = targetRot-startRot;
             }
-            float newAngle = angleToTurn/duration * (Time.time - startTime);
+            float newAngle = angleToTurn/duration * (GameManager.Instance.timeSinceLastTurn - startTime);
             gameObject.transform.eulerAngles = new Vector3(0, 0, newAngle);
         }
         else

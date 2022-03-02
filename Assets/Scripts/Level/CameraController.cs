@@ -14,8 +14,8 @@ public class CameraController : MonoBehaviour
     void Update()
     {
         // Get the grid width & height from GameManager and adjust camera
-        int width = GameManager.Instance.currentLevel.gridWidth;
-        int height = GameManager.Instance.currentLevel.gridHeight;
+        int width = GameManager.Instance.gridWidth;
+        int height = GameManager.Instance.gridHeight;
 
         // Make cam a bit wider than the grid
         float camWidth = width + 1;

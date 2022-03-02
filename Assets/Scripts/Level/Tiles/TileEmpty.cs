@@ -5,8 +5,9 @@ using Shared.Defines;
 
 public class TileEmpty : TileBase
 {
-    public virtual void Init(Vector2Int gridPos)
+    
+    public void Init(Vector2Int gridPos)
     {
-        base.Init(gridPos, TileType.Empty, Layer.Tiles);
+        BaseInit(gridPos, TileType.Empty);
     }
 }

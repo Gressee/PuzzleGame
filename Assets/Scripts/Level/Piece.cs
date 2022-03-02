@@ -39,24 +39,20 @@ public class Piece : MonoBehaviour
         // 'pos' argument is either the the pos outside (is replaceable) the grid 
         // or inside the grid (not replaceable)
 
-        // TODO Remake this method
-        
         movingDir = dir;
         replaceable = isReplaceable;
-
-        Debug.Log(dir);
 
         if (replaceable)
         {
             gridPos = null;
             startPos = pos;
-            SetWorldCoords(pos.x, pos.y);
+            SetTransform(position: pos, rotation: DirUtils.DirInAngle(dir));
         }
         else
         {
             gridPos = pos;
             startPos = pos;
-            SetWorldCoords(pos.x, pos.y);
+            SetTransform(position: pos, rotation: DirUtils.DirInAngle(dir));
         }
 
     }
@@ -120,7 +116,7 @@ public class Piece : MonoBehaviour
 
         if (tile == null)
         {
-            Debug.LogError("Tile the piece is on is null");
+            Debug.LogWarning("Tile the piece is on is null");
             return;
         }
 
@@ -151,7 +147,7 @@ public class Piece : MonoBehaviour
 
             // REDIRECT TILE -> rotate and translate in one move
             case TileType.Redirect:
-                newMovingDir = ((TileRedirect)tile).RedirectionDir;
+                newMovingDir = ((TileRedirect)tile).redirectionDir;
                 newGridPos = DirUtils.NextPosInDir(newMovingDir, currentGridPos);
                 
                 // Animation
@@ -172,8 +168,6 @@ public class Piece : MonoBehaviour
         prevGridPos = gridPos.GetValueOrDefault(new Vector2Int(-1, -1));
         gridPos = newGridPos;
         
-        Debug.Log(movingDir);
-
         prevMovingDir = movingDir;
         movingDir = newMovingDir;
     }
@@ -200,13 +194,31 @@ public class Piece : MonoBehaviour
 
     //// OTHER ////
 
-    void SetWorldCoords(float x, float y)
+    void SetTransform(Vector2? position = null, float? rotation = null, Vector2? scale = null)
     {
-        // TODO Make that this method accepts the position, rotation, and scale 
-        // so that the 'PieceTurn' Classes can use this Method instead
+        // Everything is in local coords relative to the parent object that holds 
+        // all the pieces
 
-        // Needed to ensure that the z coord is always the layer of the object
-        transform.position = new Vector3(x, y, Layer.Pieces);
+        // Position
+        // z=0 because the correct z value for this layer is set in the parent object
+        if (position != null)
+        {
+            Vector2 p = position.GetValueOrDefault(new Vector2(-1, -1));
+            transform.localPosition = new Vector3(p.x, p.y, 0);
+        }
+
+        // Rotation
+        if (rotation != null)
+        {
+            transform.localEulerAngles = new Vector3(0, 0, rotation.GetValueOrDefault(0));
+        }
+
+        // Scale
+        if (scale != null)
+        {
+            Vector2 s = scale.GetValueOrDefault(Vector2.one);
+            transform.localScale = new Vector3(s.x, s.y, 1);
+        }
     }
 }
 

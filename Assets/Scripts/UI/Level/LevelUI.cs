@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using Core.Singleton;
 using Shared.Defines;
 
-public class Game : MonoBehaviour
+public class LevelUI : MonoBehaviour
 {
     // Buttons
     [SerializeField]

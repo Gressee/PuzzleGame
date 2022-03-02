@@ -87,5 +87,30 @@ namespace Shared.DirUtils
             }
             return -1;
         }
+
+        public static Direction AngleInDir(float angle)
+        {
+            // Rounds the angle to the nearest dir
+            // Assumes Range of 0-360
+            int a = Mathf.RoundToInt(angle);
+            a = a % 360;
+            if (a >= 0 && a <= 45 && a >= 315 && a <= 360)
+            {
+                return Direction.Right;
+            }
+            else if (a >= 45 && a <= 135)
+            {
+                return Direction.Up;
+            }
+            else if (a >= 135 && a <= 225)
+            {
+                return Direction.Left;
+            }
+            else if (a >= 225 && a <= 315)
+            {
+                return Direction.Down;
+            }
+            return Direction.None;
+        }
     }
 }

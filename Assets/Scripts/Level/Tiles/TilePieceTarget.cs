@@ -7,9 +7,10 @@ public class TilePieceTarget : TileBase
 {
     public Direction pieceTargetDir {get; protected set;}
 
-    public virtual void Init(Vector2Int gridPos, Direction targetDir)
+    public void Init(Vector2Int gridPos, Direction targetDir)
     {
-        base.Init(gridPos, TileType.PieceTarget, Layer.Tiles);
+        BaseInit(gridPos, TileType.PieceTarget);
         pieceTargetDir = targetDir;
+        SetRotation(pieceTargetDir);
     }
 }

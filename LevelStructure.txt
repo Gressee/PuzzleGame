@@ -1,0 +1,20 @@
+
+CREATE A LEVEL:
+    1. Create Scene with name "Level_XX"
+    2. Move Prefab LevelLoader into 
+    3. Create Emptys "Tiles" and "Pieces"
+    4. Move Pieces and Tiles, that should be in the level, in the Emptys
+        TILES HAVE TO BE IN THE GRID
+        Pieces that are placed bellow the grid  (y <= -1) have to be placed by the player
+        Pieces that are on the grid (y >= 0) can not be replaced by the player
+        x=0 and y=0 is the origin of the grid
+
+THINGS THAT HAPPEN AT LEVEL START:
+    1. LevelLoader Spawns a few objects like the UI and GameManager
+    2. The GameManager corrects wrong coordinates
+        The "Tiles" and "Pieces" Emptys get set to x=0, y=0 z=CorrectLayer
+        The x and y values from Tiles and Pieces get rounded to ints
+        The z value relative to the parrent Emptys from Tiles and Pieces get set to z=0
+    3. The GameManager reads the GameObjects from the scene and creates
+        internal Lists/Dicts where which tile and piece is placed
+    4. The GameManager calles the 'Init' Methods from the Tiles and Pieces

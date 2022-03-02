@@ -94,7 +94,7 @@ namespace Shared.DirUtils
             // Assumes Range of 0-360
             int a = Mathf.RoundToInt(angle);
             a = a % 360;
-            if (a >= 0 && a <= 45 && a >= 315 && a <= 360)
+            if ((a >= 0 && a <= 45) || (a >= 315 && a <= 360))
             {
                 return Direction.Right;
             }

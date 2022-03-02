@@ -24,6 +24,10 @@ public class Piece : MonoBehaviour
 
     bool isDraged = false;
 
+    // Variabels to return to the state before the execution
+    Vector2Int? preExecutionPos; // Null means that the piece wasn't on grid at executon time
+    Direction preExecutionDir;
+
     
     // This is the target position of the last turn
     // This is needed for the rotation tile so pices doesn't spinn indefinetly
@@ -81,8 +85,14 @@ public class Piece : MonoBehaviour
             }
         }
 
+        // Call drag 
+        if (isDraged)
+        {
+            WhileDrag();
+        }
+
         // Check if drag should be ended
-        if (isDraged && Input.GetMouseButtonUp(0))
+        if (isDraged && !Input.GetMouseButton(0))
         {
             EndDrag();
         }
@@ -172,23 +182,73 @@ public class Piece : MonoBehaviour
         movingDir = newMovingDir;
     }
 
+    public void PrepareExecution()
+    {
+        // Gets called from GameManager
+        
+        // Save the current pos/dir to return to after the execution
+        preExecutionPos = gridPos;
+        preExecutionDir = movingDir;
+    }
+
+    public void ResetAfterExecution()
+    {
+        // TODO 
+        // Gets called after execution by the GameManager
+
+        // Return to the state before the execution
+        gridPos = preExecutionPos;
+        movingDir = preExecutionDir;
+        SetTransform(position: gridPos.GetValueOrDefault(startPos), rotation: DirUtils.DirInAngle(movingDir));
+    }
 
     //// DRAG METHODS ////
 
     void StartDrag()
     {
-
+        // When this gets called from 'OnMouseDown'
+        // it's already checked if drag is possible
+        isDraged = true;
+        gridPos = null; // While drag piece is not on grid
     }
 
     void WhileDrag()
     {
-
+        // Go to mouse position
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 target = new Vector2(mousePos.x, mousePos.y);
+        SetTransform(position: target);
     }
 
     void EndDrag()
     {
-        // TODO call this from the GameManager before the Game Execute gets 
-        // started so all pices have a well defined place
+        isDraged = false;
+
+        // Figure out if the current position is on the grid or not
+        // And if on grid if the gridPos is already taken by a not empty
+        // tile or a piece
+        Vector2Int pos = new Vector2Int(
+            Mathf.RoundToInt(transform.localPosition.x),
+            Mathf.RoundToInt(transform.localPosition.y)
+        );
+        if (pos.x >= 0 && pos.x <= GameManager.Instance.gridWidth-1 && pos.y >= 0 && pos.y <= GameManager.Instance.gridHeight-1)
+        {
+            // Is in grid
+            if (!GameManager.Instance.IsGridPosOccupied(pos))
+            {
+                // Piece can move onto grid
+                gridPos = pos;
+                SetTransform(position: pos);
+                return;
+            }
+        }
+
+        // If here is reached that means that the piece doesn't get placed
+        // on the grid and moves to its start position
+        // The start position must be outside the grid because a replaceable piece wouldnt be 
+        // draged at first
+        gridPos = null; // is not on grid
+        SetTransform(position: startPos);
     }
 
 

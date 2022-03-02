@@ -136,6 +136,7 @@ public class GameManager : Singleton<GameManager>
             y = Mathf.RoundToInt(piece.transform.localPosition.y);
             dir = DirUtils.AngleInDir(piece.transform.localEulerAngles.z);
             
+
             // Piece is replaceable by player if piece is below the grid
             if (y <= -1) replaceable = true;
 
@@ -147,6 +148,9 @@ public class GameManager : Singleton<GameManager>
             piece.transform.localScale = Vector3.one;
 
             piece.Init(replaceable, new Vector2Int(x, y), dir);
+
+            // Add piece to list with all pieces
+            pieces.Add(piece);
         }
 
         // Set the grid width from the max x,y recorded when initialising the tiles
@@ -163,10 +167,46 @@ public class GameManager : Singleton<GameManager>
 
     
 
-    public void SetGameState(GameState gameState)
+    public void SetGameState(GameState newGameState)
     {
-        // TODO Implement the chnage of game states in game manager
-        CurrentGameState = gameState;
+
+        if (CurrentGameState == GameState.Building && newGameState == GameState.Execute)
+        {
+            CurrentGameState = newGameState;
+            // Prepare pieces
+            foreach (var p in pieces)
+            {
+                p.PrepareExecution();
+            }
+            // Reset other variables
+            CurrentTurn = 0;
+            timeSinceLastTurn = 0;
+            return;
+        }
+        if ((CurrentGameState == GameState.Execute || CurrentGameState == GameState.ExecutePause) && newGameState == GameState.Building)
+        {
+            CurrentGameState = newGameState;
+            // Reset pieces
+            foreach(var p in pieces)
+            {
+                p.ResetAfterExecution();
+            }
+            // Reset other variables
+            CurrentTurn = 0;
+            timeSinceLastTurn = 0;
+            return;
+        }
+        if (CurrentGameState == GameState.Execute && newGameState == GameState.ExecutePause)
+        {
+            CurrentGameState = newGameState;
+            return;
+        }
+        if (CurrentGameState == GameState.ExecutePause && newGameState == GameState.Execute)
+        {
+            CurrentGameState = newGameState;
+            return;
+        }
+        Debug.LogError("Chage of game states requested that was not available");
     }
 
     //// OTHERS ////
@@ -182,10 +222,16 @@ public class GameManager : Singleton<GameManager>
 
     public bool IsGridPosOccupied(Vector2Int pos)
     {
+        // Every Tile and Piece count as occupied
+        // EXCEPT an EMPTY TILE
+
         // Check the tiles
         if (tiles.ContainsKey(pos))
         {
-            return false;
+            if (tiles[pos].Type != TileType.Empty)
+            {
+                return true;
+            }
         }
 
         // Check Pieces
@@ -194,11 +240,11 @@ public class GameManager : Singleton<GameManager>
             // When the tile is not on the grid girdPos would be null
             if (pic.gridPos == pos)
             {
-                return false;
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
 }

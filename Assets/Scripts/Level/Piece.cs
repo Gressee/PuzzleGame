@@ -130,46 +130,60 @@ public class Piece : MonoBehaviour
             return;
         }
 
+        // This can be used as a variabe to store a possible newGridPos
+        // until it can be verrified that this is the newGridPos
+        Vector2Int possiblePos;
         switch (tile.Type)
         {
-            // EMPTY TILE -> just move in same direction
+            // EMPTY TILE -> move in same direction (if no solid is in the way)
             case TileType.Empty:
-                newGridPos = DirUtils.NextPosInDir(movingDir, currentGridPos);
-                
-                // Animation
-                currentTurnActions.Add(new PieceTranslate(
-                    GameManager.Instance.TurnTime, currentGridPos, newGridPos
-                ));
-            break;
-
-            // PIECE TARGET TILE -> Just stay here if this is the correct direction when not just go on
-            case TileType.PieceTarget:
-                if (((TilePieceTarget)tile).pieceTargetDir != movingDir)
+                possiblePos = DirUtils.NextPosInDir(movingDir, currentGridPos);
+                if (CanMoveToGridPos(possiblePos))
                 {
-                    newGridPos = DirUtils.NextPosInDir(movingDir, currentGridPos);
-                
                     // Animation
+                    newGridPos = possiblePos;
                     currentTurnActions.Add(new PieceTranslate(
                         GameManager.Instance.TurnTime, currentGridPos, newGridPos
                     ));
                 }
             break;
 
+            // PIECE TARGET TILE -> stay here if this is the correct direction when not just go on
+            case TileType.PieceTarget:
+                if (((TilePieceTarget)tile).pieceTargetDir != movingDir)
+                {
+                    possiblePos = DirUtils.NextPosInDir(movingDir, currentGridPos);
+                    if (CanMoveToGridPos(possiblePos))
+                    {
+                        // Animation
+                        newGridPos = possiblePos;
+                        currentTurnActions.Add(new PieceTranslate(
+                            GameManager.Instance.TurnTime, currentGridPos, newGridPos
+                        ));
+                    }
+                }
+            break;
+
             // REDIRECT TILE -> rotate and translate in one move
             case TileType.Redirect:
+                // Rotation should happen everytime
                 newMovingDir = ((TileRedirect)tile).redirectionDir;
-                newGridPos = DirUtils.NextPosInDir(newMovingDir, currentGridPos);
-                
-                // Animation
-                currentTurnActions.Add(new PieceTranslate(
-                    GameManager.Instance.TurnTime, currentGridPos, newGridPos
-                ));
-
                 currentTurnActions.Add(new PieceRotate(
                     GameManager.Instance.TurnTime/7,
                     DirUtils.DirInAngle(movingDir),
                     DirUtils.DirInAngle(newMovingDir)
                 ));
+                
+                // Translation depends on the tiles
+                possiblePos = DirUtils.NextPosInDir(newMovingDir, currentGridPos);
+                if (CanMoveToGridPos(possiblePos))
+                {
+                    // Animation for 
+                    currentTurnActions.Add(new PieceTranslate(
+                        GameManager.Instance.TurnTime, currentGridPos, newGridPos
+                    ));
+
+                }
             break;
         }
 
@@ -180,6 +194,23 @@ public class Piece : MonoBehaviour
         
         prevMovingDir = movingDir;
         movingDir = newMovingDir;
+    }
+
+    bool CanMoveToGridPos(Vector2Int pos)
+    {
+        // This checks if it is possible that the pice can move on this tile.
+        // A Piece can't move on a tile if it is solid or there is no tile
+
+        // ONLY TAKES IN ACCOUNT TILES AND NOT OTHER PIECES
+        TileBase tile = GameManager.Instance.GetTile(pos);
+        if (tile != null)
+        {
+            if (tile.Type != TileType.Solid)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void PrepareExecution()

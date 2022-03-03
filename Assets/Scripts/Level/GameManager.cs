@@ -120,13 +120,17 @@ public class GameManager : Singleton<GameManager>
             {
                 ((TilePieceTarget)tile).Init(gridPos, dir);
             }
+            else if (tile is TileSolid)
+            {
+                ((TileSolid)tile).Init(gridPos);
+            }
             else if (tile is TileRedirect)
             {
                 ((TileRedirect)tile).Init(gridPos, dir);
             }
         }
 
-        // Go through all the pices
+        // Go through all the pieces
         foreach(Piece piece in piecesParent.GetComponentsInChildren<Piece>())
         {
             int x, y;

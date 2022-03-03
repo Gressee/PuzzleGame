@@ -27,12 +27,9 @@ namespace Shared.Defines
     {
         Base,
         Empty,
-        PieceTarget, // TODO
-        Solid, // TODO
-        DestroyPiece, // TODO
-        Redirect,
-        Rotate, // TODO
-        Teleport, // TODO
+        PieceTarget,
+        Solid, 
+        Redirect
     }
 
     public enum GameState

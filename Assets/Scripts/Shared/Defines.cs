@@ -7,8 +7,11 @@ namespace Shared.Defines
         // So a lower number is closer to the cam then a heigher number 
         // LOWEST LAYER SHOULD BE 0
         
-        public const float DrageTiles = 1.0f;
-        public const float Pieces = 2.0f;
+        // While a Piece or Tile gets draged this value gets added 
+        // so its always on top of everything while beeing draged
+        public const float DragOffset = -1.5f;
+
+        public const float Pieces = 4.0f;
         public const float Tiles = 5.0f;
     }
 
@@ -20,8 +23,6 @@ namespace Shared.Defines
         Left,
         Down
     }
-
-    
 
     public enum TileType
     {

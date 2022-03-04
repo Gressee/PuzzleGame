@@ -5,9 +5,9 @@ using Shared.Defines;
 
 public class TileSolid : TileBase
 {
-    public void Init(Vector2Int gridPos)
+    public void Init(bool isReplaceable, Vector2Int gridPos)
     {
-        BaseInit(gridPos, TileType.Solid);
+        BaseInit(isReplaceable, gridPos, TileType.Solid);
     }
 
 }

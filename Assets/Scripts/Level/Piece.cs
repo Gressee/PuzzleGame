@@ -199,7 +199,7 @@ public class Piece : MonoBehaviour
                 possiblePos = DirUtils.NextPosInDir(newMovingDir, currentGridPos);
                 if (CanMoveToGridPos(possiblePos))
                 {
-                    // Animation for 
+                    newGridPos = possiblePos;
                     currentTurnActions.Add(new PieceTranslate(
                         GameManager.Instance.TurnTime, currentGridPos, newGridPos
                     ));
@@ -312,7 +312,7 @@ public class Piece : MonoBehaviour
         // Go to mouse position
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 target = new Vector2(mousePos.x, mousePos.y);
-        SetTransform(position: target);
+        SetTransform(position: target, useDragOffset: true);
     }
 
     void EndDrag()
@@ -340,7 +340,7 @@ public class Piece : MonoBehaviour
 
         // If here is reached that means that the piece doesn't get placed
         // on the grid and moves to its start position
-        // The start position must be outside the grid because a replaceable piece wouldnt be 
+        // The start position must be outside the grid because a non replaceable piece wouldnt be 
         // draged at first
         gridPos = null; // is not on grid
         SetTransform(position: startPos);
@@ -349,17 +349,21 @@ public class Piece : MonoBehaviour
 
     //// OTHER ////
 
-    void SetTransform(Vector2? position = null, float? rotation = null, Vector2? scale = null)
+    void SetTransform(Vector2? position = null, float? rotation = null, Vector2? scale = null, bool useDragOffset = false)
     {
         // Everything is in local coords relative to the parent object that holds 
         // all the pieces
 
         // Position
         // z=0 because the correct z value for this layer is set in the parent object
+        // (execpt the drag offset is used so that the piece is in fromt of everything while dragging)
         if (position != null)
         {
             Vector2 p = position.GetValueOrDefault(new Vector2(-1, -1));
-            transform.localPosition = new Vector3(p.x, p.y, 0);
+            float z;
+            if (useDragOffset) z = Layer.DragOffset;
+            else z = 0;
+            transform.localPosition = new Vector3(p.x, p.y, z);
         }
 
         // Rotation

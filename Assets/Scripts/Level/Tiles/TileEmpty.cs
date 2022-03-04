@@ -6,8 +6,8 @@ using Shared.Defines;
 public class TileEmpty : TileBase
 {
     
-    public void Init(Vector2Int gridPos)
+    public void Init(bool isReplaceable, Vector2Int gridPos)
     {
-        BaseInit(gridPos, TileType.Empty);
+        BaseInit(isReplaceable, gridPos, TileType.Empty);
     }
 }

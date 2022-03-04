@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2944169615607522414}
   - component: {fileID: -5021188626133281394}
-  - component: {fileID: 2616982154896303105}
+  - component: {fileID: 4356782835060005140}
   m_Layer: 0
   m_Name: TileRedirect
   m_TagString: Untagged
@@ -130,8 +130,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bea95cf59d3b764a5bf1414fda948ab8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!61 &2616982154896303105
-BoxCollider2D:
+--- !u!58 &4356782835060005140
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -144,15 +144,5 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
+  m_Radius: 0.45

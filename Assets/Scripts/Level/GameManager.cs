@@ -28,7 +28,7 @@ public class GameManager : Singleton<GameManager>
     public float timeSinceLastTurn {get; protected set;} = 0.0f;
 
     // Level
-    Dictionary<Vector2Int, TileBase> tiles = new Dictionary<Vector2Int, TileBase>();
+    List<TileBase> tiles = new List<TileBase>();
     List<Piece> pieces = new List<Piece>();
     public int gridWidth  {get; protected set;} = 0;
     public int gridHeight {get; protected set;} = 0;
@@ -93,12 +93,17 @@ public class GameManager : Singleton<GameManager>
         {
             int x, y;
             Direction dir;
+            bool replaceable = false;
             x = Mathf.RoundToInt(tile.transform.localPosition.x);
             y = Mathf.RoundToInt(tile.transform.localPosition.y);
             dir = DirUtils.AngleInDir(tile.transform.localEulerAngles.z);
             Vector2Int gridPos = new Vector2Int(x, y);
             maxX = Mathf.Max(maxX, x);
             maxY = Mathf.Max(maxY, y);
+
+            // Tile is replaceable when under the grid
+            if (y <= -1)
+                replaceable = true;
 
             // Correct the position of the tile
             // rounded values for x and y to account for errors in the editor
@@ -107,10 +112,10 @@ public class GameManager : Singleton<GameManager>
             tile.transform.localPosition = new Vector3(x, y, 0);
             tile.transform.localScale = Vector3.one;
             
-            // Add tile to dict if possible whennot delete tile
-            if (!tiles.ContainsKey(gridPos))
+            // Add tile to list if possible whennot delete tile
+            if (GetTile(gridPos) == null) // null means ther is no tile at this pos
             {
-                tiles.Add(gridPos, tile);
+                tiles.Add(tile);
             }
             else
             {
@@ -123,21 +128,25 @@ public class GameManager : Singleton<GameManager>
             // in the tile is NOT SET YET
             if (tile is TileEmpty)
             {
-                ((TileEmpty)tile).Init(gridPos);
+                ((TileEmpty)tile).Init(replaceable, gridPos);
             }
             else if (tile is TilePieceTarget)
             {
-                ((TilePieceTarget)tile).Init(gridPos, dir);
+                ((TilePieceTarget)tile).Init(replaceable, gridPos, dir);
             }
             else if (tile is TileSolid)
             {
-                ((TileSolid)tile).Init(gridPos);
+                ((TileSolid)tile).Init(replaceable, gridPos);
             }
             else if (tile is TileRedirect)
             {
-                ((TileRedirect)tile).Init(gridPos, dir);
+                ((TileRedirect)tile).Init(replaceable, gridPos, dir);
             }
         }
+
+        // Set the grid width from the max x,y recorded when initialising the tiles
+        gridWidth = maxX + 1;
+        gridHeight = maxY + 1;
 
         // Go through all the pieces
         foreach(Piece piece in piecesParent.GetComponentsInChildren<Piece>())
@@ -165,18 +174,55 @@ public class GameManager : Singleton<GameManager>
             // Add piece to list with all pieces
             pieces.Add(piece);
         }
+    }
 
-        // Set the grid width from the max x,y recorded when initialising the tiles
-        gridWidth = maxX + 1;
-        gridHeight = maxY + 1;
-        // Check if enogh tiles are in the grid to fill the rectangle
-        if (tiles.Count != gridHeight * gridWidth)
+
+    //// USED BY DRAGABLE TILES ////
+
+    public bool CreateEmptyTile(Vector2Int pos)
+    {
+        // Returns success
+        // Called by a dragable tile when is gets removed from the grid
+        // So that the grid has no hole
+        GameObject tilesParent = GameObject.Find("Tiles");
+        if (tilesParent != null)
         {
-            Debug.LogError($"There isn't the right amount of Tiles in the grid for its width/height\nTiles={tiles.Count} w={gridWidth} h={gridHeight}");
+            TileEmpty t = (TileEmpty)Instantiate(tileEmptyPrefab, Vector3.zero, Quaternion.identity);
+            t.transform.SetParent(tilesParent.transform);
+            t.name = "TEST NAME";
+            t.Init(false, pos);
+            tiles.Add(t);
+            return true;
         }
 
-
+        return false;
     }
+
+    public bool RemoveEmptyTile(Vector2Int pos)
+    {
+        // Returns if tile can be replces on the pos
+        // Called by a dragable tile when is gets replaced on the grid
+        // to remove the empty tile and make place for the draggable tile
+        TileBase t = GetTile(pos);
+        
+        if (t == null)
+        {
+            // If for some reason the space was empty
+            // (its the responsibility of the tile to check if the 
+            // pos in even on the grid)
+            return true;
+        }
+        else if (t.Type == TileType.Empty)
+        {
+            // Remove the tile from list and then destroy the gameObject
+            tiles.Remove(t);
+            Destroy(t.gameObject);
+            return true;
+        }
+        return false;
+    }
+
+
 
     bool CheckLevelSolved()
     {
@@ -238,9 +284,10 @@ public class GameManager : Singleton<GameManager>
 
     public TileBase GetTile(Vector2Int pos)
     {
-        if (tiles.ContainsKey(pos))
+        foreach (TileBase t in tiles)
         {
-            return tiles[pos];
+            if (t.gridPos == pos)
+                return t;
         }
         return null;
     }
@@ -250,10 +297,11 @@ public class GameManager : Singleton<GameManager>
         // Every Tile and Piece count as occupied
         // EXCEPT an EMPTY TILE
 
-        // Check the tiles
-        if (tiles.ContainsKey(pos))
+        // Check the tile
+        TileBase t = GetTile(pos);
+        if (t != null)
         {
-            if (tiles[pos].Type != TileType.Empty)
+            if (t.Type != TileType.Empty)
             {
                 return true;
             }

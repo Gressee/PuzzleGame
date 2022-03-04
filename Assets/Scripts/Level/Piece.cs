@@ -20,7 +20,11 @@ public class Piece : MonoBehaviour
     // is NULL when the Pieces isn NOT on the GRID
     // This is always the position on the grid the piece has after completing the current turn
     public Vector2Int? gridPos {get; protected set;}
+    public Direction movingDir {get; protected set;} = Direction.None;
 
+    // A Piece can get broken if it collides with an other Piece or gets destroy by
+    // an obstacle (thats maybe comming in the future)
+    public bool broken {get; protected set;} = false;
 
     bool isDraged = false;
 
@@ -30,11 +34,9 @@ public class Piece : MonoBehaviour
 
     
     // This is the target position of the last turn
-    // This is needed for the rotation tile so pices doesn't spinn indefinetly
-    Vector2Int prevGridPos = new Vector2Int(-1, -1);
+    public Vector2Int prevGridPos {get; protected set;} = new Vector2Int(-1, -1);
+    public Direction prevMovingDir {get; protected set;} = Direction.None;
 
-    Direction movingDir = Direction.None;
-    Direction prevMovingDir = Direction.None;
 
     public void Init(bool isReplaceable, Vector2Int pos, Direction dir)
     {
@@ -61,6 +63,8 @@ public class Piece : MonoBehaviour
 
     }
 
+
+    //// UNITY METHODS ////
 
     void Update()
     {
@@ -106,6 +110,19 @@ public class Piece : MonoBehaviour
         }
     }
 
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        // Gets called when colliding with a object with a collider
+        // Make piece broken when colliding with another piece
+        Piece p = other.gameObject.GetComponent<Piece>();
+        if (p != null)
+        {
+            SetBroken();
+        }
+    }
+
+
+    //// MOVEMENT ////
 
     void CalculateNextTurn()
     {
@@ -113,6 +130,9 @@ public class Piece : MonoBehaviour
         
         // When outside grid then no turn needs the be calculated
         if (gridPos == null) return;
+
+        // If the piece is broken down then don't move anymore
+        if (broken == true) return;
         
         // Only because the var name is shorter
         Vector2Int currentGridPos = gridPos.GetValueOrDefault(new Vector2Int(-1, -1));
@@ -133,6 +153,7 @@ public class Piece : MonoBehaviour
         // This can be used as a variabe to store a possible newGridPos
         // until it can be verrified that this is the newGridPos
         Vector2Int possiblePos;
+        
         switch (tile.Type)
         {
             // EMPTY TILE -> move in same direction (if no solid is in the way)
@@ -213,6 +234,23 @@ public class Piece : MonoBehaviour
         return false;
     }
 
+    public bool HasReachedTarget()
+    {
+        // If this piece in on the correct target tile
+        if (gridPos == null) return false;
+        TileBase t = GameManager.Instance.GetTile(gridPos.GetValueOrDefault(new Vector2Int(-1, -1)));
+        if (t.Type == TileType.PieceTarget)
+        {
+            if (((TilePieceTarget)t).pieceTargetDir == movingDir)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //// GAME EXECUTION ////
+
     public void PrepareExecution()
     {
         // Gets called from GameManager
@@ -224,13 +262,39 @@ public class Piece : MonoBehaviour
 
     public void ResetAfterExecution()
     {
-        // TODO 
         // Gets called after execution by the GameManager
 
         // Return to the state before the execution
         gridPos = preExecutionPos;
         movingDir = preExecutionDir;
         SetTransform(position: gridPos.GetValueOrDefault(startPos), rotation: DirUtils.DirInAngle(movingDir));
+
+        // Make the piece unbroken if it might have beed broken
+        SetUnbroken();
+    }
+
+
+    //// HANDLE BROKEN PIECE ////
+    
+    void SetBroken()
+    {
+        if (broken == false)
+        {
+            // TODO Chnage sprite
+            broken = true;
+            
+            // Stop all animations
+            currentTurnActions = new List<PieceTurn>();
+        }
+    }
+
+    void SetUnbroken()
+    {
+        if (broken == true)
+        {
+            // TODO Change sprite
+            broken = false;
+        }
     }
 
     //// DRAG METHODS ////

@@ -4,11 +4,12 @@ using UnityEngine.UI;
 using Core.Singleton;
 using Shared.Defines;
 
-public class LevelUI : MonoBehaviour
+public class LevelUI : Singleton<LevelUI>
 {
-    // Buttons
     [SerializeField]
     Button btnExecute, btnRevert, btnPause;
+    [SerializeField]
+    Canvas canLvlSolevdOverlay;
 
     void Start()
     {
@@ -28,5 +29,10 @@ public class LevelUI : MonoBehaviour
         btnRevert.onClick.AddListener(() =>{
             GameManager.Instance.SetGameState(GameState.Building);
         });
+    }
+
+    public void SpawnLevelSolvedOverlay()
+    {
+        canLvlSolevdOverlay.gameObject.SetActive(true);
     }
 }

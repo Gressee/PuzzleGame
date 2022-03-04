@@ -46,11 +46,20 @@ public class GameManager : Singleton<GameManager>
         {
             timeSinceLastTurn += Time.deltaTime;
             if (timeSinceLastTurn >= TurnTime)
-            {
-                // Nothing more to do here because pieces 
-                // Check themself when a new turn has begun
-                CurrentTurn ++;
-                timeSinceLastTurn = 0;
+            {   
+                // Check if the level has been solved in the last turn
+                if (CheckLevelSolved())
+                {
+                    LevelUI.Instance.SpawnLevelSolvedOverlay();
+                }
+                else
+                {
+                    // Start next turn
+                    // Nothing more to do here because pieces 
+                    // Check themself when a new turn has begun
+                    CurrentTurn ++;
+                    timeSinceLastTurn = 0;
+                }
             }
         }
     }
@@ -169,7 +178,18 @@ public class GameManager : Singleton<GameManager>
 
     }
 
-    
+    bool CheckLevelSolved()
+    {
+        // Check every piece if its on the correct target tile
+        foreach (Piece p in pieces)
+        {
+            if (p.HasReachedTarget() == false)
+            {
+                return false;
+            }
+        }
+        return true;
+    }    
 
     public void SetGameState(GameState newGameState)
     {
@@ -212,6 +232,7 @@ public class GameManager : Singleton<GameManager>
         }
         Debug.LogError("Chage of game states requested that was not available");
     }
+
 
     //// OTHERS ////
 

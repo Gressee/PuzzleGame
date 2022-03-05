@@ -9,7 +9,7 @@ public class GameManager : Singleton<GameManager>
 {
 
     [SerializeField]
-    TileBase tileEmptyPrefab, tileRedirectPrefab, tilePieceTargetPrefab;
+    TileBase tileEmptyPrefab, tileRedirectPrefab, tilePieceTargetPrefab, tileTeleportPrefab;
 
     [SerializeField]
     Piece piecePrefab;
@@ -142,6 +142,10 @@ public class GameManager : Singleton<GameManager>
             {
                 ((TileRedirect)tile).Init(replaceable, gridPos, dir);
             }
+            else if (tile is TileTeleport)
+            {
+                ((TileTeleport)tile).Init(replaceable, gridPos);
+            }
         }
 
         // Set the grid width from the max x,y recorded when initialising the tiles
@@ -189,7 +193,7 @@ public class GameManager : Singleton<GameManager>
         {
             TileEmpty t = (TileEmpty)Instantiate(tileEmptyPrefab, Vector3.zero, Quaternion.identity);
             t.transform.SetParent(tilesParent.transform);
-            t.name = "TEST NAME";
+            t.name = "TileEmpty";
             t.Init(false, pos);
             tiles.Add(t);
             return true;

@@ -206,6 +206,45 @@ public class Piece : MonoBehaviour
 
                 }
             break;
+
+            // TELEPORT TILE -> chnage pos to the teleport tile in the tile to piece is on
+            // If the other tile isn't on the grid or just is not there then don't change pos
+            // When the tile on the prev tile is exactly the other tile from this teleport tile
+            // that means the pice got teleported lat turn should not port again this turn
+            case TileType.Teleport:
+                TileBase prevTile = GameManager.Instance.GetTile(prevGridPos);
+                if (((TileTeleport)tile).GetOtherTile() == prevTile)
+                {
+                    // Just try to go straight
+                    possiblePos = DirUtils.NextPosInDir(movingDir, currentGridPos);
+                    if (CanMoveToGridPos(possiblePos))
+                    {
+                        // Animation
+                        newGridPos = possiblePos;
+                        currentTurnActions.Add(new PieceTranslate(
+                            GameManager.Instance.TurnTime, currentGridPos, newGridPos
+                        ));
+                    }
+                }
+                else
+                {
+                    // Try teleport
+                    Vector2Int? otherPos = ((TileTeleport)tile).GetOtherTilePos();
+                    if (otherPos != null)
+                    {
+                            newGridPos = otherPos.GetValueOrDefault(new Vector2Int(-1, -1));
+                    }
+                    else
+                    {
+                        newGridPos = currentGridPos;
+                    }
+
+                    // Animation
+                    currentTurnActions.Add(new PieceTeleport(
+                        GameManager.Instance.TurnTime, currentGridPos, newGridPos, Vector2.one, Vector2.one/4
+                    ));
+                }
+            break;
         }
 
         // Set the positions for the new turn
@@ -267,7 +306,7 @@ public class Piece : MonoBehaviour
         // Return to the state before the execution
         gridPos = preExecutionPos;
         movingDir = preExecutionDir;
-        SetTransform(position: gridPos.GetValueOrDefault(startPos), rotation: DirUtils.DirInAngle(movingDir));
+        SetTransform(position: gridPos.GetValueOrDefault(startPos), rotation: DirUtils.DirInAngle(movingDir), scale: Vector2.one);
 
         // Make the piece unbroken if it might have beed broken
         SetUnbroken();

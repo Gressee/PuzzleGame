@@ -30,7 +30,8 @@ namespace Shared.Defines
         Empty,
         PieceTarget,
         Solid, 
-        Redirect
+        Redirect,
+        Teleport
     }
 
     public enum GameState

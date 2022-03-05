@@ -22,8 +22,7 @@ public class CameraController : MonoBehaviour
         // This sets the vertical size
         Camera.main.orthographicSize = (camWidth/2)/Camera.main.aspect;
 
-        // Move cam to the center of the grid
         // (bottom left of grid is at 0,0)
-        camObject.transform.position = new Vector3(width/2-0.5f, height/2-0.5f, 0);
+        camObject.transform.position = new Vector3(width/2-0.5f, height/2-0.5f - 1.5f, 0);
     }
 }

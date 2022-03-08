@@ -9,7 +9,7 @@ public class GameManager : Singleton<GameManager>
 {
 
     [SerializeField]
-    TileBase tileEmptyPrefab, tileRedirectPrefab, tilePieceTargetPrefab, tileTeleportPrefab;
+    TileBase tileRedirectPrefab, tilePieceTargetPrefab, tileTeleportPrefab;
 
     [SerializeField]
     Piece piecePrefab;
@@ -20,12 +20,11 @@ public class GameManager : Singleton<GameManager>
     // A Turn is for example when a piece translates from one to the next tile
     // The times it takes to execuite on Turn
     public float TurnTime {get; protected set;} = 1.0f;
-    // When in 'Execute' State this gets increased according to the 'TurnTime'
-    // Pieces use this var to calc when they have to be where and in what orientation
-    public int CurrentTurn {get; protected set;} = 0;
 
     // How much time has passed since the last turn has been started
-    public float timeSinceLastTurn {get; protected set;} = 0.0f;
+    // Starts not at 0 because then after pressing the execute button pices move 
+    // 'TurnTime' secods later
+    public float timeSinceLastTurn {get; protected set;} = 0.9f;
 
     // Level
     List<TileBase> tiles = new List<TileBase>();
@@ -55,10 +54,11 @@ public class GameManager : Singleton<GameManager>
                 else
                 {
                     // Start next turn
-                    // Nothing more to do here because pieces 
-                    // Check themself when a new turn has begun
-                    CurrentTurn ++;
                     timeSinceLastTurn = 0;
+                    foreach(Piece p in pieces)
+                    {
+                        p.CalculateNextTurn();
+                    }
                 }
             }
         }
@@ -69,6 +69,15 @@ public class GameManager : Singleton<GameManager>
     {
         // This reads in the that was created in the scene
         
+        // Set the correct layer of the background
+        Vector3 gbPos = GridBackground.Instance.transform.position;
+        gbPos.z = Layer.GridBackground;
+        GridBackground.Instance.transform.position = gbPos;
+
+        // read the grid dimensions from the grid bbackgroud object
+        gridWidth = GridBackground.Instance.GetGridWidth();
+        gridHeight = GridBackground.Instance.GetGridHeight();
+
         // Get the parent objects that contain the pieces and tiles
         GameObject tilesParent = GameObject.Find("Tiles");
         GameObject piecesParent = GameObject.Find("Pieces");
@@ -87,8 +96,6 @@ public class GameManager : Singleton<GameManager>
         piecesParent.transform.localScale = Vector3.one;
 
         // Go through all tiles
-        int maxX = 0; // To get the grid dimensions
-        int maxY = 0; 
         foreach(TileBase tile in tilesParent.GetComponentsInChildren<TileBase>())
         {
             int x, y;
@@ -98,12 +105,12 @@ public class GameManager : Singleton<GameManager>
             y = Mathf.RoundToInt(tile.transform.localPosition.y);
             dir = DirUtils.AngleInDir(tile.transform.localEulerAngles.z);
             Vector2Int gridPos = new Vector2Int(x, y);
-            maxX = Mathf.Max(maxX, x);
-            maxY = Mathf.Max(maxY, y);
 
             // Tile is replaceable when under the grid
             if (y <= -1)
+            {
                 replaceable = true;
+            }
 
             // Correct the position of the tile
             // rounded values for x and y to account for errors in the editor
@@ -126,11 +133,7 @@ public class GameManager : Singleton<GameManager>
             // Call the Init Method of the tile
             // This has to be done this way because the tile Type varibale
             // in the tile is NOT SET YET
-            if (tile is TileEmpty)
-            {
-                ((TileEmpty)tile).Init(replaceable, gridPos);
-            }
-            else if (tile is TilePieceTarget)
+            if (tile is TilePieceTarget)
             {
                 ((TilePieceTarget)tile).Init(replaceable, gridPos, dir);
             }
@@ -147,10 +150,6 @@ public class GameManager : Singleton<GameManager>
                 ((TileTeleport)tile).Init(replaceable, gridPos);
             }
         }
-
-        // Set the grid width from the max x,y recorded when initialising the tiles
-        gridWidth = maxX + 1;
-        gridHeight = maxY + 1;
 
         // Go through all the pieces
         foreach(Piece piece in piecesParent.GetComponentsInChildren<Piece>())
@@ -181,53 +180,6 @@ public class GameManager : Singleton<GameManager>
     }
 
 
-    //// USED BY DRAGABLE TILES ////
-
-    public bool CreateEmptyTile(Vector2Int pos)
-    {
-        // Returns success
-        // Called by a dragable tile when is gets removed from the grid
-        // So that the grid has no hole
-        GameObject tilesParent = GameObject.Find("Tiles");
-        if (tilesParent != null)
-        {
-            TileEmpty t = (TileEmpty)Instantiate(tileEmptyPrefab, Vector3.zero, Quaternion.identity);
-            t.transform.SetParent(tilesParent.transform);
-            t.name = "TileEmpty";
-            t.Init(false, pos);
-            tiles.Add(t);
-            return true;
-        }
-
-        return false;
-    }
-
-    public bool RemoveEmptyTile(Vector2Int pos)
-    {
-        // Returns if tile can be replces on the pos
-        // Called by a dragable tile when is gets replaced on the grid
-        // to remove the empty tile and make place for the draggable tile
-        TileBase t = GetTile(pos);
-        
-        if (t == null)
-        {
-            // If for some reason the space was empty
-            // (its the responsibility of the tile to check if the 
-            // pos in even on the grid)
-            return true;
-        }
-        else if (t.Type == TileType.Empty)
-        {
-            // Remove the tile from list and then destroy the gameObject
-            tiles.Remove(t);
-            Destroy(t.gameObject);
-            return true;
-        }
-        return false;
-    }
-
-
-
     bool CheckLevelSolved()
     {
         // Check every piece if its on the correct target tile
@@ -253,8 +205,7 @@ public class GameManager : Singleton<GameManager>
                 p.PrepareExecution();
             }
             // Reset other variables
-            CurrentTurn = 0;
-            timeSinceLastTurn = 0;
+            timeSinceLastTurn = TurnTime * 0.9f; // Why ??? see comment at initialisation
             return;
         }
         if ((CurrentGameState == GameState.Execute || CurrentGameState == GameState.ExecutePause) && newGameState == GameState.Building)
@@ -266,8 +217,7 @@ public class GameManager : Singleton<GameManager>
                 p.ResetAfterExecution();
             }
             // Reset other variables
-            CurrentTurn = 0;
-            timeSinceLastTurn = 0;
+            timeSinceLastTurn = TurnTime * 0.9f; // Why ??? see comment at initialisation
             return;
         }
         if (CurrentGameState == GameState.Execute && newGameState == GameState.ExecutePause)
@@ -296,19 +246,23 @@ public class GameManager : Singleton<GameManager>
         return null;
     }
 
+    public bool IsPosOnGrid(Vector2Int pos)
+    {
+        if (pos.x < gridWidth && pos.y < gridHeight && pos.x >= 0 && pos.y >= 0)
+            return true;
+        else
+            return false;
+    }
+
     public bool IsGridPosOccupied(Vector2Int pos)
     {
         // Every Tile and Piece count as occupied
-        // EXCEPT an EMPTY TILE
 
         // Check the tile
         TileBase t = GetTile(pos);
         if (t != null)
         {
-            if (t.Type != TileType.Empty)
-            {
-                return true;
-            }
+            return true;
         }
 
         // Check Pieces

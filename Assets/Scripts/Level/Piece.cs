@@ -71,14 +71,6 @@ public class Piece : MonoBehaviour
         // Execute movement
         if (gridPos != null && GameManager.Instance.CurrentGameState == GameState.Execute)
         {
-            // Check if the GameManager is on the next turn
-            // If yes calculate the next turn
-            if (currentTurnNum != GameManager.Instance.CurrentTurn)
-            {
-                currentTurnNum = GameManager.Instance.CurrentTurn;
-                CalculateNextTurn();
-            }
-
             // Execute the current turn action
             foreach(PieceTurn pt in currentTurnActions)
             {
@@ -124,7 +116,7 @@ public class Piece : MonoBehaviour
 
     //// MOVEMENT ////
 
-    void CalculateNextTurn()
+    public void CalculateNextTurn()
     {
         currentTurnActions = new List<PieceTurn>();
         
@@ -144,107 +136,105 @@ public class Piece : MonoBehaviour
         // so this is the tile the piece is on
         TileBase tile = GameManager.Instance.GetTile(currentGridPos);
 
-        if (tile == null)
-        {
-            Debug.LogWarning("Tile the piece is on is null");
-            return;
-        }
-
         // This can be used as a variabe to store a possible newGridPos
         // until it can be verrified that this is the newGridPos
         Vector2Int possiblePos;
         
-        switch (tile.Type)
+        // WHEN THERE IS NO TILE GO STRAIGHT
+        if (tile == null)
         {
-            // EMPTY TILE -> move in same direction (if no solid is in the way)
-            case TileType.Empty:
-                possiblePos = DirUtils.NextPosInDir(movingDir, currentGridPos);
-                if (CanMoveToGridPos(possiblePos))
-                {
-                    // Animation
-                    newGridPos = possiblePos;
-                    currentTurnActions.Add(new PieceTranslate(
-                        GameManager.Instance.TurnTime, currentGridPos, newGridPos
-                    ));
-                }
-            break;
-
-            // PIECE TARGET TILE -> stay here if this is the correct direction when not just go on
-            case TileType.PieceTarget:
-                if (((TilePieceTarget)tile).pieceTargetDir != movingDir)
-                {
-                    possiblePos = DirUtils.NextPosInDir(movingDir, currentGridPos);
-                    if (CanMoveToGridPos(possiblePos))
-                    {
-                        // Animation
-                        newGridPos = possiblePos;
-                        currentTurnActions.Add(new PieceTranslate(
-                            GameManager.Instance.TurnTime, currentGridPos, newGridPos
-                        ));
-                    }
-                }
-            break;
-
-            // REDIRECT TILE -> rotate and translate in one move
-            case TileType.Redirect:
-                // Rotation should happen everytime
-                newMovingDir = ((TileRedirect)tile).redirectionDir;
-                currentTurnActions.Add(new PieceRotate(
-                    GameManager.Instance.TurnTime/7,
-                    DirUtils.DirInAngle(movingDir),
-                    DirUtils.DirInAngle(newMovingDir)
+            possiblePos = DirUtils.NextPosInDir(movingDir, currentGridPos);
+            if (CanMoveToGridPos(possiblePos))
+            {
+                // Animation
+                newGridPos = possiblePos;
+                currentTurnActions.Add(new PieceTranslate(
+                    GameManager.Instance.TurnTime, currentGridPos, newGridPos
                 ));
-                
-                // Translation depends on the tiles
-                possiblePos = DirUtils.NextPosInDir(newMovingDir, currentGridPos);
-                if (CanMoveToGridPos(possiblePos))
-                {
-                    newGridPos = possiblePos;
-                    currentTurnActions.Add(new PieceTranslate(
-                        GameManager.Instance.TurnTime, currentGridPos, newGridPos
+            }
+        }
+        else
+        {
+            // SPECIAL TILE TYPES
+            switch (tile.Type)
+            {
+                // PIECE TARGET TILE -> stay here if this is the correct direction when not just go on
+                case TileType.PieceTarget:
+                    if (((TilePieceTarget)tile).pieceTargetDir != movingDir)
+                    {
+                        possiblePos = DirUtils.NextPosInDir(movingDir, currentGridPos);
+                        if (CanMoveToGridPos(possiblePos))
+                        {
+                            // Animation
+                            newGridPos = possiblePos;
+                            currentTurnActions.Add(new PieceTranslate(
+                                GameManager.Instance.TurnTime, currentGridPos, newGridPos
+                            ));
+                        }
+                    }
+                break;
+
+                // REDIRECT TILE -> rotate and translate in one move
+                case TileType.Redirect:
+                    // Rotation should happen everytime
+                    newMovingDir = ((TileRedirect)tile).redirectionDir;
+                    currentTurnActions.Add(new PieceRotate(
+                        GameManager.Instance.TurnTime/7,
+                        DirUtils.DirInAngle(movingDir),
+                        DirUtils.DirInAngle(newMovingDir)
                     ));
-
-                }
-            break;
-
-            // TELEPORT TILE -> chnage pos to the teleport tile in the tile to piece is on
-            // If the other tile isn't on the grid or just is not there then don't change pos
-            // When the tile on the prev tile is exactly the other tile from this teleport tile
-            // that means the pice got teleported lat turn should not port again this turn
-            case TileType.Teleport:
-                TileBase prevTile = GameManager.Instance.GetTile(prevGridPos);
-                if (((TileTeleport)tile).GetOtherTile() == prevTile)
-                {
-                    // Just try to go straight
-                    possiblePos = DirUtils.NextPosInDir(movingDir, currentGridPos);
+                    
+                    // Translation depends on the tiles
+                    possiblePos = DirUtils.NextPosInDir(newMovingDir, currentGridPos);
                     if (CanMoveToGridPos(possiblePos))
                     {
-                        // Animation
                         newGridPos = possiblePos;
                         currentTurnActions.Add(new PieceTranslate(
                             GameManager.Instance.TurnTime, currentGridPos, newGridPos
                         ));
+
                     }
-                }
-                else
-                {
-                    // Try teleport
-                    Vector2Int? otherPos = ((TileTeleport)tile).GetOtherTilePos();
-                    if (otherPos != null)
+                break;
+
+                // TELEPORT TILE -> chnage pos to the teleport tile in the tile to piece is on
+                // If the other tile isn't on the grid or just is not there then don't change pos
+                // When the tile on the prev tile is exactly the other tile from this teleport tile
+                // that means the pice got teleported lat turn should not port again this turn
+                case TileType.Teleport:
+                    TileBase prevTile = GameManager.Instance.GetTile(prevGridPos);
+                    if (((TileTeleport)tile).GetOtherTile() == prevTile)
                     {
-                            newGridPos = otherPos.GetValueOrDefault(new Vector2Int(-1, -1));
+                        // Just try to go straight
+                        possiblePos = DirUtils.NextPosInDir(movingDir, currentGridPos);
+                        if (CanMoveToGridPos(possiblePos))
+                        {
+                            // Animation
+                            newGridPos = possiblePos;
+                            currentTurnActions.Add(new PieceTranslate(
+                                GameManager.Instance.TurnTime, currentGridPos, newGridPos
+                            ));
+                        }
                     }
                     else
                     {
-                        newGridPos = currentGridPos;
-                    }
+                        // Try teleport
+                        Vector2Int? otherPos = ((TileTeleport)tile).GetOtherTilePos();
+                        if (otherPos != null)
+                        {
+                                newGridPos = otherPos.GetValueOrDefault(new Vector2Int(-1, -1));
+                        }
+                        else
+                        {
+                            newGridPos = currentGridPos;
+                        }
 
-                    // Animation
-                    currentTurnActions.Add(new PieceTeleport(
-                        GameManager.Instance.TurnTime, currentGridPos, newGridPos, Vector2.one, Vector2.one/4
-                    ));
-                }
-            break;
+                        // Animation
+                        currentTurnActions.Add(new PieceTeleport(
+                            GameManager.Instance.TurnTime, currentGridPos, newGridPos, Vector2.one, Vector2.one/4
+                        ));
+                    }
+                break;
+            }
         }
 
         // Set the positions for the new turn
@@ -256,16 +246,25 @@ public class Piece : MonoBehaviour
         movingDir = newMovingDir;
     }
 
+
     bool CanMoveToGridPos(Vector2Int pos)
     {
         // This checks if it is possible that the pice can move on this tile.
         // A Piece can't move on a tile if it is solid or there is no tile
 
         // ONLY TAKES IN ACCOUNT TILES AND NOT OTHER PIECES
-        TileBase tile = GameManager.Instance.GetTile(pos);
-        if (tile != null)
+        if (GameManager.Instance.IsPosOnGrid(pos))
         {
-            if (tile.Type != TileType.Solid)
+            TileBase tile = GameManager.Instance.GetTile(pos);
+            if (tile != null)
+            {
+                if (tile.Type != TileType.Solid)
+                {
+                    return true;
+                }
+                return true;
+            }
+            else
             {
                 return true;
             }
@@ -273,16 +272,20 @@ public class Piece : MonoBehaviour
         return false;
     }
 
+
     public bool HasReachedTarget()
     {
         // If this piece in on the correct target tile
         if (gridPos == null) return false;
         TileBase t = GameManager.Instance.GetTile(gridPos.GetValueOrDefault(new Vector2Int(-1, -1)));
-        if (t.Type == TileType.PieceTarget)
+        if (t != null)
         {
-            if (((TilePieceTarget)t).pieceTargetDir == movingDir)
+            if (t.Type == TileType.PieceTarget)
             {
-                return true;
+                if (((TilePieceTarget)t).pieceTargetDir == movingDir)
+                {
+                    return true;
+                }
             }
         }
         return false;
@@ -302,6 +305,9 @@ public class Piece : MonoBehaviour
     public void ResetAfterExecution()
     {
         // Gets called after execution by the GameManager
+
+        // Delete turn actions
+        currentTurnActions = new List<PieceTurn>();
 
         // Return to the state before the execution
         gridPos = preExecutionPos;
@@ -359,13 +365,13 @@ public class Piece : MonoBehaviour
         isDraged = false;
 
         // Figure out if the current position is on the grid or not
-        // And if on grid if the gridPos is already taken by a not empty
+        // And if on grid if the gridPos is already taken by a 
         // tile or a piece
         Vector2Int pos = new Vector2Int(
             Mathf.RoundToInt(transform.localPosition.x),
             Mathf.RoundToInt(transform.localPosition.y)
         );
-        if (pos.x >= 0 && pos.x <= GameManager.Instance.gridWidth-1 && pos.y >= 0 && pos.y <= GameManager.Instance.gridHeight-1)
+        if (GameManager.Instance.IsPosOnGrid(pos))
         {
             // Is in grid
             if (!GameManager.Instance.IsGridPosOccupied(pos))

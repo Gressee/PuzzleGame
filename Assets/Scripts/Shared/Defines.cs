@@ -13,6 +13,7 @@ namespace Shared.Defines
 
         public const float Pieces = 4.0f;
         public const float Tiles = 5.0f;
+        public const float GridBackground = 6.0f;
     }
 
     public enum Direction
@@ -27,7 +28,6 @@ namespace Shared.Defines
     public enum TileType
     {
         Base,
-        Empty,
         PieceTarget,
         Solid, 
         Redirect,

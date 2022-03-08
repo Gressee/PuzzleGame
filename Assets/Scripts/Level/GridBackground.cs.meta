@@ -1,9 +1,10 @@
 fileFormatVersion: 2
-guid: b308c875fa3d93f82ac62b1f336c09f9
+guid: 8880c1b3e60c06a84833eb55a2faa6c3
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - backgroundTilePrefab: {fileID: 1397468781792332672, guid: f9ade6b660540095391007ffc0b9480b, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

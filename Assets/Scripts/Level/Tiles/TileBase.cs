@@ -72,16 +72,6 @@ public abstract class TileBase : MonoBehaviour
     {
         // When this gets called from 'OnMouseDown'
         // it's already checked if drag is possible
-        
-        // Check if tile needs to be replaced by an empty tile
-        if (gridPos != null)
-        {
-            if (GameManager.Instance.CreateEmptyTile(gridPos.GetValueOrDefault(new Vector2Int(-1, -1))) == false)
-            {
-                return;
-            }
-        }
-
         isDraged = true;
         gridPos = null; // While drag tile is not on grid
     }
@@ -99,16 +89,13 @@ public abstract class TileBase : MonoBehaviour
         isDraged = false;
 
         // Figure out if the current position is on the grid or not
-        // And if on grid if the gridPos is already taken by a not empty
-        // tile or a piece
         Vector2Int pos = new Vector2Int(
             Mathf.RoundToInt(transform.localPosition.x),
             Mathf.RoundToInt(transform.localPosition.y)
         );
-        if (pos.x >= 0 && pos.x <= GameManager.Instance.gridWidth-1 && pos.y >= 0 && pos.y <= GameManager.Instance.gridHeight-1)
+        if (GameManager.Instance.IsPosOnGrid(pos))
         {
-            // Try to remove a empty tile and if succed place tile on that po
-            if (GameManager.Instance.RemoveEmptyTile(pos))
+            if (!GameManager.Instance.IsGridPosOccupied(pos))
             {
                 // Tile can move onto grid
                 gridPos = pos;

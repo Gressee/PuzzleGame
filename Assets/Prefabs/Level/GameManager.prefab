@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e83e8f060a7bcaddabbe441937f73c5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileEmptyPrefab: {fileID: -2971448942013472810, guid: a81137e578f2536dcb77f59e5ac51e4c, type: 3}
+  tileEmptyPrefab: {fileID: 0}
   tileRedirectPrefab: {fileID: -5021188626133281394, guid: 151f1d5a66fd9599a88611e04062a020, type: 3}
   tilePieceTargetPrefab: {fileID: 6769440068437575248, guid: 7d343445ddc4ba267b1cfe99707e7a55, type: 3}
   tileTeleportPrefab: {fileID: 505956056988968408, guid: c9ec95041907e7906a5263f2b7a68f46, type: 3}

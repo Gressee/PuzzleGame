@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Shared.Defines;
+using Shared.Utils;
 using Shared.DirUtils;
 
 public class Piece : MonoBehaviour
 {
-    int currentTurnNum = -1;
     List<PieceTurn> currentTurnActions = new List<PieceTurn>();
     
     // If the piece can be 
@@ -15,7 +15,7 @@ public class Piece : MonoBehaviour
     // If the piece is REPLACEABLE then this is the position when the pice is outside the grid
     // If the piece is NOT REPLACEABLE then this is the grid position 
     // where the piece is before the game execution starts
-    Vector2Int startPos;
+    Vector2 startPos;
 
     // is NULL when the Pieces isn NOT on the GRID
     // This is always the position on the grid the piece has after completing the current turn
@@ -38,7 +38,7 @@ public class Piece : MonoBehaviour
     public Direction prevMovingDir {get; protected set;} = Direction.None;
 
 
-    public void Init(bool isReplaceable, Vector2Int pos, Direction dir)
+    public void Init(bool isReplaceable, Vector2 pos, Direction dir)
     {
         // Has to be called after creatig object
 
@@ -56,7 +56,7 @@ public class Piece : MonoBehaviour
         }
         else
         {
-            gridPos = pos;
+            gridPos = Utils.RoundVec2(pos);
             startPos = pos;
             SetTransform(position: pos, rotation: DirUtils.DirInAngle(dir));
         }
@@ -312,7 +312,7 @@ public class Piece : MonoBehaviour
         // Return to the state before the execution
         gridPos = preExecutionPos;
         movingDir = preExecutionDir;
-        SetTransform(position: gridPos.GetValueOrDefault(startPos), rotation: DirUtils.DirInAngle(movingDir), scale: Vector2.one);
+        SetTransform(position: ((Vector2?)gridPos).GetValueOrDefault(startPos), rotation: DirUtils.DirInAngle(movingDir), scale: Vector2.one);
 
         // Make the piece unbroken if it might have beed broken
         SetUnbroken();

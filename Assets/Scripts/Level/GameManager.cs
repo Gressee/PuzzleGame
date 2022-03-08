@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using Core.Singleton;
 using Shared.Defines;
+using Shared.Utils;
 using Shared.DirUtils;
 
 public class GameManager : Singleton<GameManager>
@@ -98,13 +99,12 @@ public class GameManager : Singleton<GameManager>
         // Go through all tiles
         foreach(TileBase tile in tilesParent.GetComponentsInChildren<TileBase>())
         {
-            int x, y;
             Direction dir;
             bool replaceable = false;
-            x = Mathf.RoundToInt(tile.transform.localPosition.x);
-            y = Mathf.RoundToInt(tile.transform.localPosition.y);
+            float x = Utils.RoundToHalf(tile.transform.localPosition.x);
+            float y = Utils.RoundToHalf(tile.transform.localPosition.y);
+            Vector2 tilePos = new Vector2(x, y);
             dir = DirUtils.AngleInDir(tile.transform.localEulerAngles.z);
-            Vector2Int gridPos = new Vector2Int(x, y);
 
             // Tile is replaceable when under the grid
             if (y <= -1)
@@ -120,13 +120,13 @@ public class GameManager : Singleton<GameManager>
             tile.transform.localScale = Vector3.one;
             
             // Add tile to list if possible whennot delete tile
-            if (GetTile(gridPos) == null) // null means ther is no tile at this pos
+            if (GetTile(Utils.RoundVec2(tilePos)) == null) // null means ther is no tile at this pos
             {
                 tiles.Add(tile);
             }
             else
             {
-                Debug.LogError($"Couldn't add tile because there already was one at ({gridPos.x}, {gridPos.y})");
+                Debug.LogError($"Couldn't add tile because there already was one at ({tilePos.x}, {tilePos.y})");
                 Destroy(tile);
             }
 
@@ -135,30 +135,29 @@ public class GameManager : Singleton<GameManager>
             // in the tile is NOT SET YET
             if (tile is TilePieceTarget)
             {
-                ((TilePieceTarget)tile).Init(replaceable, gridPos, dir);
+                ((TilePieceTarget)tile).Init(replaceable, tilePos, dir);
             }
             else if (tile is TileSolid)
             {
-                ((TileSolid)tile).Init(replaceable, gridPos);
+                ((TileSolid)tile).Init(replaceable, tilePos);
             }
             else if (tile is TileRedirect)
             {
-                ((TileRedirect)tile).Init(replaceable, gridPos, dir);
+                ((TileRedirect)tile).Init(replaceable, tilePos, dir);
             }
             else if (tile is TileTeleport)
             {
-                ((TileTeleport)tile).Init(replaceable, gridPos);
+                ((TileTeleport)tile).Init(replaceable, tilePos);
             }
         }
 
         // Go through all the pieces
         foreach(Piece piece in piecesParent.GetComponentsInChildren<Piece>())
         {
-            int x, y;
             Direction dir;
             bool replaceable = false;
-            x = Mathf.RoundToInt(piece.transform.localPosition.x);
-            y = Mathf.RoundToInt(piece.transform.localPosition.y);
+            float x = Utils.RoundToHalf(piece.transform.localPosition.x);
+            float y = Utils.RoundToHalf(piece.transform.localPosition.y);
             dir = DirUtils.AngleInDir(piece.transform.localEulerAngles.z);
             
 
@@ -172,11 +171,13 @@ public class GameManager : Singleton<GameManager>
             piece.transform.localPosition = new Vector3(x, y, 0);
             piece.transform.localScale = Vector3.one;
 
-            piece.Init(replaceable, new Vector2Int(x, y), dir);
+            piece.Init(replaceable, new Vector2(x, y), dir);
 
             // Add piece to list with all pieces
             pieces.Add(piece);
         }
+
+        Debug.Log($"{gridWidth}  {gridHeight}");
     }
 
 

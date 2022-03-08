@@ -1,5 +1,6 @@
 using UnityEngine;
 using Shared.Defines;
+using Shared.Utils;
 using Shared.DirUtils;
 
 public abstract class TileBase : MonoBehaviour
@@ -13,13 +14,13 @@ public abstract class TileBase : MonoBehaviour
     public Vector2Int? gridPos {get; protected set;}
 
     // This is either the place outside the grid (replaceable) or the gridPos (not replaceable)
-    protected Vector2Int startPos;
+    protected Vector2 startPos;
 
     protected bool isDraged = false;
 
     // CREATE 'Init' Method in derived class
     // CALL THIS FROM 'Init'
-    protected void BaseInit(bool isReplaceable, Vector2Int pos, TileType type)
+    protected void BaseInit(bool isReplaceable, Vector2 pos, TileType type)
     {
         // 'pos' argument is either the the pos outside (is replaceable) the grid 
         // or inside the grid (not replaceable)
@@ -35,7 +36,7 @@ public abstract class TileBase : MonoBehaviour
         }
         else
         {
-            gridPos = pos;
+            gridPos = Utils.RoundVec2(pos);
             startPos = pos;
             SetTransform(position: pos);
         }

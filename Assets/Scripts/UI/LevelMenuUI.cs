@@ -8,7 +8,7 @@ public class LevelMenuUI : MonoBehaviour
     [SerializeField]
     LevelMenuBtn lvlMenuBtnPrefab;
 
-    const int totalLevels = 20;
+    const int totalLevels = 3;
     const int btnsPerRow = 5;
 
     void Start()

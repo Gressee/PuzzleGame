@@ -9,7 +9,7 @@ public class TileRedirect : TileBase
 
     public Direction redirectionDir {get; protected set;}
     
-    public void Init(bool isReplaceable, Vector2Int gridPos, Direction dir)
+    public void Init(bool isReplaceable, Vector2 gridPos, Direction dir)
     {
         BaseInit(isReplaceable, gridPos, TileType.Redirect);
         redirectionDir = dir;

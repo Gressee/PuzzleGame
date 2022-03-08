@@ -9,7 +9,7 @@ public class TileTeleport : TileBase
     [SerializeField]
     TileTeleport counterPartTile;
 
-    public void Init(bool isReplaceable, Vector2Int gridPos)
+    public void Init(bool isReplaceable, Vector2 gridPos)
     {
         BaseInit(isReplaceable, gridPos, TileType.Teleport);
 

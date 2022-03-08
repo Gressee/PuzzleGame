@@ -258,11 +258,14 @@ public class Piece : MonoBehaviour
             TileBase tile = GameManager.Instance.GetTile(pos);
             if (tile != null)
             {
-                if (tile.Type != TileType.Solid)
+                if (tile.Type == TileType.Solid)
+                {
+                    return false;
+                }
+                else
                 {
                     return true;
                 }
-                return true;
             }
             else
             {

@@ -9,7 +9,7 @@ public class GridBackground : Singleton<GridBackground>
     GameObject backgroundTilePrefab;
 
     [SerializeField]
-    int gridWidth, gridHeight;
+    int gridWidth, gridHeight = -1;
 
     void Awake()
     {

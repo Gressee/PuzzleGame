@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using Core.Singleton;
 using Shared.Defines;
 
@@ -8,12 +9,18 @@ public class LevelUI : Singleton<LevelUI>
 {
     [SerializeField]
     Button btnExecute, btnRevert, btnPause;
+    
+    // Level Solved Overlay
+    [SerializeField]
+    Button btnMenu, btnReplay, btnNextLevel;
+
+
     [SerializeField]
     Canvas canLvlSolevdOverlay;
 
     void Start()
     {
-        // Add anonymus methods to the button on click events
+        //// Add anonymus methods to the button on click events ////
 
         // Execute
         btnExecute.onClick.AddListener(() =>{
@@ -28,6 +35,24 @@ public class LevelUI : Singleton<LevelUI>
         // Revert
         btnRevert.onClick.AddListener(() =>{
             GameManager.Instance.SetGameState(GameState.Building);
+        });
+
+        // Level Solved Overlay
+
+        // Menu
+        btnMenu.onClick.AddListener(() => {
+            SceneManager.LoadScene("LevelSelect");
+        });
+
+        // Replay
+        btnReplay.onClick.AddListener(() => {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        });
+
+        // NextLevel
+        btnNextLevel.onClick.AddListener(() => {
+            // TODO make next level button function
+            Debug.LogWarning("Next Level currently unsupported");
         });
     }
 

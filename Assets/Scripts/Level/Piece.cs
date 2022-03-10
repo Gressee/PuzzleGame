@@ -7,6 +7,10 @@ using Shared.DirUtils;
 
 public class Piece : MonoBehaviour
 {
+
+    [SerializeField]
+    GameObject sprite, spriteBroken;
+
     List<PieceTurn> currentTurnActions = new List<PieceTurn>();
     
     // If the piece can be 
@@ -328,9 +332,11 @@ public class Piece : MonoBehaviour
     {
         if (broken == false)
         {
-            // TODO Chnage sprite
             broken = true;
             
+            sprite.SetActive(false);
+            spriteBroken.SetActive(true);
+
             // Stop all animations
             currentTurnActions = new List<PieceTurn>();
         }
@@ -340,8 +346,10 @@ public class Piece : MonoBehaviour
     {
         if (broken == true)
         {
-            // TODO Change sprite
             broken = false;
+
+            sprite.SetActive(true);
+            spriteBroken.SetActive(false);
         }
     }
 

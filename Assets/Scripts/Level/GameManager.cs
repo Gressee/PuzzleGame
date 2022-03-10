@@ -176,8 +176,6 @@ public class GameManager : Singleton<GameManager>
             // Add piece to list with all pieces
             pieces.Add(piece);
         }
-
-        Debug.Log($"{gridWidth}  {gridHeight}");
     }
 
 

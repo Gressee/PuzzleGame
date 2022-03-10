@@ -73,7 +73,7 @@ GameObject:
   - component: {fileID: 5907248065110263052}
   - component: {fileID: 6942813802916001156}
   m_Layer: 0
-  m_Name: TileSolid
+  m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

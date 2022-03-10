@@ -586,15 +586,33 @@ class PieceRotate: PieceTurn
             gameObject.transform.eulerAngles = new Vector3(0, 0, r);
             */
             float angleToTurn;
-            if (Mathf.Abs(targetRot-startRot) > 180)
+
+            if (targetRot-startRot > 0)
             {
-                angleToTurn = -(360 - (targetRot-startRot));
+                if (targetRot-startRot > 180)
+                {
+                    angleToTurn = -(360 - (targetRot-startRot));
+                }
+                else
+                {
+                    angleToTurn = targetRot-startRot;
+                }
             }
             else
             {
-                angleToTurn = targetRot-startRot;
+                if (targetRot-startRot < -180)
+                {
+                    angleToTurn = (360 + (targetRot-startRot));
+                }
+                else
+                {
+                    angleToTurn = targetRot-startRot;
+                }
             }
-            float newAngle = angleToTurn/duration * (GameManager.Instance.timeSinceLastTurn - startTime);
+
+            float newAngle = angleToTurn/duration * (GameManager.Instance.timeSinceLastTurn - startTime) + startRot;
+            if (newAngle >= 360) newAngle -= 360;
+            if (newAngle < 0) newAngle += 360;
             gameObject.transform.eulerAngles = new Vector3(0, 0, newAngle);
         }
         else

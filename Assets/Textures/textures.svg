@@ -74,8 +74,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.31999999"
-     inkscape:cx="-2681.8099"
-     inkscape:cy="-887.85429"
+     inkscape:cx="-2467.5362"
+     inkscape:cy="-787.5186"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -120,7 +120,7 @@
        id="rect4" />
     <rect
        style="fill:#2c3e50;fill-opacity:1;stroke-width:0.95729846"
-       x="-516.76434"
+       x="-516.51129"
        y="129.9404"
        width="158.75"
        height="158.75"
@@ -191,7 +191,7 @@
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:40.00002289px;font-family:Impact;-inkscape-font-specification:'Impact, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none" /></flowRegion><flowPara
          id="flowPara4626">90°</flowPara></flowRoot>    <path
        sodipodi:type="star"
-       style="fill:#f49d1e;fill-opacity:1;stroke:#d1800a;stroke-width:3.11282292;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:16.20000076;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#ffbe00;fill-opacity:1;stroke:#e6ab00;stroke-width:3.11282292;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:16.20000076;stroke-dasharray:none;stroke-opacity:1"
        id="path829"
        sodipodi:sides="3"
        sodipodi:cx="-649.09365"
@@ -215,7 +215,7 @@
        height="67.73333"
        x="-675.77179"
        y="336.3667"
-       ry="12.97963"
+       ry="13.703115"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96" />
     <circle
@@ -275,11 +275,11 @@
        transform="matrix(0.26458333,0,0,0.26458333,-22.801432,12.862346)"><flowRegion
          id="flowRegion895"><rect
            id="rect897"
-           width="315.62497"
-           height="51.562519"
+           width="362.5"
+           height="54.6875"
            x="-2128.125"
            y="1338.1447" /></flowRegion><flowPara
-         id="flowPara899">Tile Background</flowPara></flowRoot>    <flowRoot
+         id="flowPara899">Grid Background</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot893-9"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none"
@@ -291,29 +291,35 @@
            x="-2128.125"
            y="1338.1447" /></flowRegion><flowPara
          id="flowPara899-8">Piece</flowPara></flowRoot>    <path
-       style="display:inline;fill:#f49d1e;fill-opacity:1;stroke:#d1800a;stroke-width:3.55079389;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:16.20000076;stroke-dasharray:none;stroke-opacity:1"
+       style="display:inline;fill:#ffbe00;fill-opacity:1;stroke:#e6ab00;stroke-width:3.55079389;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:16.20000076;stroke-dasharray:none;stroke-opacity:1"
        inkscape:transform-center-x="-8.2002402"
        inkscape:transform-center-y="4.2685351e-06"
        d="m -662.3518,542.22682 v -23.80833 l 22.16263,11.92277 c -1.61092,2.32941 -2.82961,5.90363 -5.18509,6.78652 -6.13915,2.30107 -14.53647,-0.70329 -16.97754,5.09904 z"
        id="path829-0"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccsc" />
+       sodipodi:nodetypes="cccsc"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
     <path
-       style="display:inline;fill:#f49d1e;fill-opacity:1;stroke:#d1800a;stroke-width:3.55079389;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:16.20000076;stroke-dasharray:none;stroke-opacity:1"
+       style="display:inline;fill:#ffbe00;fill-opacity:1;stroke:#e6ab00;stroke-width:3.55079389;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:16.20000076;stroke-dasharray:none;stroke-opacity:1"
        inkscape:transform-center-x="-0.49646162"
        inkscape:transform-center-y="4.120923"
        d="m -633.50324,535.31259 16.13856,8.83881 -24.00046,9.93092 c -8.14325,-12.53261 7.70279,-11.12294 7.8619,-18.76973 z"
        id="path829-0-5"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccc" />
+       sodipodi:nodetypes="cccc"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
     <path
-       style="display:inline;fill:#f49d1e;fill-opacity:1;stroke:#d1800a;stroke-width:3.33021688;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:16.20000076;stroke-dasharray:none;stroke-opacity:1"
+       style="display:inline;fill:#ffbe00;fill-opacity:1;stroke:#e6ab00;stroke-width:3.33021688;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:16.20000076;stroke-dasharray:none;stroke-opacity:1"
        inkscape:transform-center-x="-8.2002358"
        inkscape:transform-center-y="-2.3548562e-05"
        d="m -662.64882,547.20045 0.23579,18.3485 16.97518,-8.95478 c -2.40944,-3.06474 -2.05767,-9.07886 -6.14298,-11.74053 -7.6645,-4.99356 -4.84689,2.47147 -11.06799,2.34681 z"
        id="path829-0-11"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccsc" />
+       sodipodi:nodetypes="cccsc"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
     <flowRoot
        xml:space="preserve"
        id="flowRoot893-9-0"
@@ -326,10 +332,12 @@
            x="-2128.125"
            y="1338.1447" /></flowRegion><flowPara
          id="flowPara899-8-0">Piece broken</flowPara></flowRoot>    <path
-       style="display:inline;fill:#f49d1e;fill-opacity:1;stroke:#d1800a;stroke-width:2.97605252;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="display:inline;fill:#ffbe00;fill-opacity:1;stroke:#e6ab00;stroke-width:2.97605252;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m -661.87419,598.84457 c -6.87478,0 -12.40957,5.53482 -12.40957,12.4096 v 39.93864 c 0,6.87477 5.53479,12.40906 12.40957,12.40906 h 39.93864 c 6.87477,0 12.40906,-5.53429 12.40906,-12.40906 v -39.93864 c 0,-6.87478 -5.53429,-12.4096 -12.40906,-12.4096 z m 2.17352,10.78437 37.40288,21.59455 -37.40288,21.59455 z"
        id="rect840-4-6"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
     <rect
        style="display:inline;fill:#d23600;fill-opacity:1;stroke-width:0.95729846"
        x="-834.01129"
@@ -356,7 +364,9 @@
        inkscape:export-ydpi="96"
        transform="rotate(90)" />
     <g
-       id="g1157">
+       id="g1157"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96">
       <path
          inkscape:export-ydpi="96"
          inkscape:export-xdpi="96"
@@ -396,5 +406,55 @@
        width="158.75"
        height="158.75"
        id="rect4-5-7-2" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot893-9-0-4"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       transform="matrix(0.26458333,0,0,0.26458333,-15.61568,274.63226)"><flowRegion
+         id="flowRegion895-3-8-0"><rect
+           id="rect897-6-5-6"
+           width="315.62497"
+           height="51.562519"
+           x="-2128.125"
+           y="1338.1447" /></flowRegion><flowPara
+         id="flowPara899-8-0-2">Tile Piece Target</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot893-9-0-9"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       transform="matrix(0.26458333,0,0,0.26458333,-13.962034,377.1583)"><flowRegion
+         id="flowRegion895-3-8-9"><rect
+           id="rect897-6-5-0"
+           width="315.62497"
+           height="51.562519"
+           x="-2128.125"
+           y="1338.1447" /></flowRegion><flowPara
+         id="flowPara1195">Tile Redirect</flowPara></flowRoot>    <rect
+       style="display:inline;fill:#d2dbe2;fill-opacity:1;stroke:#526271;stroke-width:3.03283596;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect840-4-1"
+       width="64.7005"
+       height="64.7005"
+       x="-674.25537"
+       y="797.39429"
+       ry="12.398454"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot893-9-0-9-3"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       transform="matrix(0.26458333,0,0,0.26458333,-15.083211,468.93565)"><flowRegion
+         id="flowRegion895-3-8-9-1"><rect
+           id="rect897-6-5-0-1"
+           width="315.62497"
+           height="51.562519"
+           x="-2128.125"
+           y="1338.1447" /></flowRegion><flowPara
+         id="flowPara1238">Tile Solid</flowPara></flowRoot>    <rect
+       style="display:inline;fill:#0092b2;fill-opacity:1;stroke-width:0.95729846"
+       x="-357.76129"
+       y="129.9404"
+       width="158.75"
+       height="158.75"
+       id="rect2-3" />
   </g>
 </svg>

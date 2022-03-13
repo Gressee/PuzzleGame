@@ -2,21 +2,20 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="793.70081"
    height="1122.5197"
    viewBox="0 0 210 297"
    version="1.1"
    id="svg8"
-   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
-   sodipodi:docname="textures.svg">
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   sodipodi:docname="textures.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs2">
     <inkscape:path-effect
@@ -59,7 +58,7 @@
        only_selected="false" />
     <linearGradient
        id="linearGradient822"
-       osb:paint="solid">
+       inkscape:swatch="solid">
       <stop
          style="stop-color:#000000;stop-opacity:1;"
          offset="0"
@@ -68,20 +67,20 @@
   </defs>
   <sodipodi:namedview
      id="base"
-     pagecolor="#ffffff"
+     pagecolor="#717171"
      bordercolor="#666666"
      borderopacity="1.0"
-     inkscape:pageopacity="0.0"
+     inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.31999999"
-     inkscape:cx="-2467.5362"
-     inkscape:cy="-787.5186"
+     inkscape:zoom="0.16"
+     inkscape:cx="778.12502"
+     inkscape:cy="481.25001"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
-     inkscape:window-height="1056"
-     inkscape:window-x="1920"
+     inkscape:window-height="1051"
+     inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
@@ -93,7 +92,8 @@
      inkscape:snap-object-midpoints="true"
      inkscape:snap-nodes="true"
      inkscape:snap-others="true"
-     units="px" />
+     units="px"
+     inkscape:pagecheckerboard="true" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -102,7 +102,6 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -189,7 +188,8 @@
            x="1518.0698"
            y="-461.84146"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:40.00002289px;font-family:Impact;-inkscape-font-specification:'Impact, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none" /></flowRegion><flowPara
-         id="flowPara4626">90°</flowPara></flowRoot>    <path
+         id="flowPara4626">90°</flowPara></flowRoot>
+    <path
        sodipodi:type="star"
        style="fill:#ffbe00;fill-opacity:1;stroke:#e6ab00;stroke-width:3.11282292;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:16.20000076;stroke-dasharray:none;stroke-opacity:1"
        id="path829"
@@ -261,14 +261,28 @@
        xml:space="preserve"
        id="flowRoot885"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       transform="matrix(0.6592827,0,0,0.6592827,910.94856,271.5004)"><flowRegion
+       transform="matrix(0.6592827,0,0,0.6592827,811.72981,276.46134)"><flowRegion
          id="flowRegion887"><rect
            id="rect889"
            width="1246.2758"
            height="57.452412"
            x="-2311.3555"
            y="-693.86096" /></flowRegion><flowPara
-         id="flowPara891">https://colordesigner.io/#2C3E50-F49D1E-1BB89A-27A28A-FFFFFF</flowPara></flowRoot>    <flowRoot
+         id="flowPara891">https://colordesigner.io/#2C3E50-F49D1E-1BB89A-27A28A-FFFFFF</flowPara></flowRoot>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot885-8"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       transform="matrix(0.6592827,0,0,0.6592827,2119.3695,334.47937)"><flowRegion
+         id="flowRegion887-2"><rect
+           id="rect889-8"
+           width="395.97897"
+           height="62.468891"
+           x="-2311.3555"
+           y="-693.86096"
+           style="stroke-width:1" /></flowRegion><flowPara
+         id="flowPara891-8">https://colordrop.io/</flowPara></flowRoot>
+    <flowRoot
        xml:space="preserve"
        id="flowRoot893"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -279,7 +293,8 @@
            height="54.6875"
            x="-2128.125"
            y="1338.1447" /></flowRegion><flowPara
-         id="flowPara899">Grid Background</flowPara></flowRoot>    <flowRoot
+         id="flowPara899">Grid Background</flowPara></flowRoot>
+    <flowRoot
        xml:space="preserve"
        id="flowRoot893-9"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none"
@@ -290,7 +305,8 @@
            height="51.562519"
            x="-2128.125"
            y="1338.1447" /></flowRegion><flowPara
-         id="flowPara899-8">Piece</flowPara></flowRoot>    <path
+         id="flowPara899-8">Piece</flowPara></flowRoot>
+    <path
        style="display:inline;fill:#ffbe00;fill-opacity:1;stroke:#e6ab00;stroke-width:3.55079389;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:16.20000076;stroke-dasharray:none;stroke-opacity:1"
        inkscape:transform-center-x="-8.2002402"
        inkscape:transform-center-y="4.2685351e-06"
@@ -331,7 +347,8 @@
            height="51.562519"
            x="-2128.125"
            y="1338.1447" /></flowRegion><flowPara
-         id="flowPara899-8-0">Piece broken</flowPara></flowRoot>    <path
+         id="flowPara899-8-0">Piece broken</flowPara></flowRoot>
+    <path
        style="display:inline;fill:#ffbe00;fill-opacity:1;stroke:#e6ab00;stroke-width:2.97605252;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m -661.87419,598.84457 c -6.87478,0 -12.40957,5.53482 -12.40957,12.4096 v 39.93864 c 0,6.87477 5.53479,12.40906 12.40957,12.40906 h 39.93864 c 6.87477,0 12.40906,-5.53429 12.40906,-12.40906 v -39.93864 c 0,-6.87478 -5.53429,-12.4096 -12.40906,-12.4096 z m 2.17352,10.78437 37.40288,21.59455 -37.40288,21.59455 z"
        id="rect840-4-6"
@@ -406,6 +423,34 @@
        width="158.75"
        height="158.75"
        id="rect4-5-7-2" />
+    <rect
+       style="display:inline;fill:#ecf0f1;fill-opacity:1;stroke-width:0.957298"
+       x="735.87244"
+       y="110.79427"
+       width="158.75"
+       height="158.75"
+       id="rect4-5-9" />
+    <rect
+       style="display:inline;fill:#607d8b;fill-opacity:1;stroke-width:0.957298"
+       x="577.12244"
+       y="110.79428"
+       width="158.75"
+       height="158.75"
+       id="rect4-5-8-3" />
+    <rect
+       style="display:inline;fill:#f1c40f;fill-opacity:1;stroke-width:0.957298"
+       x="735.87244"
+       y="-47.955719"
+       width="158.75"
+       height="158.75"
+       id="rect4-5-7-7" />
+    <rect
+       style="display:inline;fill:#19191a;fill-opacity:1;stroke-width:0.957298"
+       x="577.12244"
+       y="-47.955723"
+       width="158.75"
+       height="158.75"
+       id="rect4-5-7-2-2" />
     <flowRoot
        xml:space="preserve"
        id="flowRoot893-9-0-4"
@@ -417,7 +462,8 @@
            height="51.562519"
            x="-2128.125"
            y="1338.1447" /></flowRegion><flowPara
-         id="flowPara899-8-0-2">Tile Piece Target</flowPara></flowRoot>    <flowRoot
+         id="flowPara899-8-0-2">Tile Piece Target</flowPara></flowRoot>
+    <flowRoot
        xml:space="preserve"
        id="flowRoot893-9-0-9"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none"
@@ -428,7 +474,8 @@
            height="51.562519"
            x="-2128.125"
            y="1338.1447" /></flowRegion><flowPara
-         id="flowPara1195">Tile Redirect</flowPara></flowRoot>    <rect
+         id="flowPara1195">Tile Redirect</flowPara></flowRoot>
+    <rect
        style="display:inline;fill:#d2dbe2;fill-opacity:1;stroke:#526271;stroke-width:3.03283596;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect840-4-1"
        width="64.7005"
@@ -449,12 +496,34 @@
            height="51.562519"
            x="-2128.125"
            y="1338.1447" /></flowRegion><flowPara
-         id="flowPara1238">Tile Solid</flowPara></flowRoot>    <rect
+         id="flowPara1238">Tile Solid</flowPara></flowRoot>
+    <rect
        style="display:inline;fill:#0092b2;fill-opacity:1;stroke-width:0.95729846"
        x="-357.76129"
        y="129.9404"
        width="158.75"
        height="158.75"
        id="rect2-3" />
+    <path
+       sodipodi:type="star"
+       style="fill:#ffffff;fill-rule:evenodd"
+       id="path178"
+       inkscape:flatsided="true"
+       sodipodi:sides="3"
+       sodipodi:cx="1270.3125"
+       sodipodi:cy="639.0625"
+       sodipodi:r1="114.8411"
+       sodipodi:r2="1.148411"
+       sodipodi:arg1="0.52359878"
+       sodipodi:arg2="1.5707963"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="m 1369.7678,696.48305 -198.9106,0 99.4553,-172.26165 z"
+       transform="matrix(0,0.34052145,-0.34052145,0,234.37723,-389.46282)"
+       inkscape:transform-center-x="-9.7764605"
+       inkscape:transform-center-y="3.9891527e-06"
+       inkscape:export-filename="/home/gresse/CodingProjects/PuzzleGame/Assets/Textures/Triangle.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
   </g>
 </svg>

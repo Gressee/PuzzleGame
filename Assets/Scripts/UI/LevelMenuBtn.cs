@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using Core.Singleton;
 
 public class LevelMenuBtn : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class LevelMenuBtn : MonoBehaviour
             sceneName = "Level_" + sceneName;
 
             Debug.Log($"Change Scene to \"{sceneName}\"");
-            SceneManager.LoadScene(sceneName);
+            SceneTransManager.Instance.LoadScene(sceneName);
         });
     }
 

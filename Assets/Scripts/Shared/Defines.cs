@@ -14,6 +14,7 @@ namespace Shared.Defines
         public const float Pieces = 4.0f;
         public const float Tiles = 5.0f;
         public const float GridBackground = 6.0f;
+        public const float GridLineOffset = -0.1f;
     }
 
     public enum Direction

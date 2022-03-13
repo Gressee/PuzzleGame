@@ -15,6 +15,10 @@ public class GameManager : Singleton<GameManager>
     [SerializeField]
     Piece piecePrefab;
 
+    [SerializeField]
+    GameObject gridLinePrefab;
+
+
     public GameState CurrentGameState {get; protected set;} = GameState.Building;
 
 
@@ -37,6 +41,7 @@ public class GameManager : Singleton<GameManager>
     void Start()
     {
         ReadLevel();
+        SpawnGridLines();
     }
 
 
@@ -71,8 +76,7 @@ public class GameManager : Singleton<GameManager>
         // This reads in the that was created in the scene
         
         // Set the correct layer of the background
-        Vector3 gbPos = GridBackground.Instance.transform.position;
-        gbPos.z = Layer.GridBackground;
+        Vector3 gbPos = new Vector3(0, 0, Layer.GridBackground);
         GridBackground.Instance.transform.position = gbPos;
 
         // read the grid dimensions from the grid bbackgroud object
@@ -178,6 +182,37 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+
+    void SpawnGridLines()
+    {
+        int x, y;
+        GameObject gridLine;
+        
+        // Vertical lines
+        for (x = 0; x < gridWidth-1; x++)
+        {
+            for (y = 0; y < gridHeight-1; y++)
+            {
+                // Gets a small offset to be infront og the tile background
+                gridLine = Instantiate(gridLinePrefab, Vector3.zero, Quaternion.identity);
+                gridLine.transform.SetParent(GridBackground.Instance.transform);
+                gridLine.transform.localPosition = new Vector3((float)x + 0.5f, y, Layer.GridLineOffset);
+            }
+        }
+
+        // Horizontal lines
+        for (x = 0; x < gridWidth-1; x++)
+        {
+            for (y = 0; y < gridHeight-1; y++)
+            {
+                // Gets a small offset to be infront og the tile background
+                gridLine = Instantiate(gridLinePrefab, Vector3.zero, Quaternion.identity);
+                gridLine.transform.SetParent(GridBackground.Instance.transform);
+                gridLine.transform.localEulerAngles = new Vector3(0, 0, 90); 
+                gridLine.transform.localPosition = new Vector3(x, (float)y + 0.5f, Layer.GridLineOffset);
+            }
+        }
+    }
 
     bool CheckLevelSolved()
     {

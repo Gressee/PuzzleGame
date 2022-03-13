@@ -41,12 +41,12 @@ public class LevelUI : Singleton<LevelUI>
 
         // Menu
         btnMenu.onClick.AddListener(() => {
-            SceneManager.LoadScene("LevelSelect");
+            SceneTransManager.Instance.LoadScene("LevelMenu");
         });
 
         // Replay
         btnReplay.onClick.AddListener(() => {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            SceneTransManager.Instance.LoadScene(SceneManager.GetActiveScene().name);
         });
 
         // NextLevel

@@ -4,7 +4,8 @@ CREATE A LEVEL:
     2. Move Prefab LevelLoader into 
     3. Create Emptys "Tiles" and "Pieces"
     4. Create "GridBackground" object from Prefabs and enter the grid dimensions
-    5. Move Pieces and Tiles, that should be in the level, in the Emptys
+    5. Add "SceneTransManager" from Prefabs
+    6. Move Pieces and Tiles, that should be in the level, in the Emptys
         TILES HAVE TO BE IN THE GRID
         Pieces that are placed bellow the grid  (y <= -1) have to be placed by the player
         Pieces that are on the grid (y >= 0) can not be replaced by the player

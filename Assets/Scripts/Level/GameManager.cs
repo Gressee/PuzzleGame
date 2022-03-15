@@ -191,7 +191,7 @@ public class GameManager : Singleton<GameManager>
         // Vertical lines
         for (x = 0; x < gridWidth-1; x++)
         {
-            for (y = 0; y < gridHeight-1; y++)
+            for (y = 0; y < gridHeight; y++)
             {
                 // Gets a small offset to be infront og the tile background
                 gridLine = Instantiate(gridLinePrefab, Vector3.zero, Quaternion.identity);
@@ -201,7 +201,7 @@ public class GameManager : Singleton<GameManager>
         }
 
         // Horizontal lines
-        for (x = 0; x < gridWidth-1; x++)
+        for (x = 0; x < gridWidth; x++)
         {
             for (y = 0; y < gridHeight-1; y++)
             {

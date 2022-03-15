@@ -37,6 +37,7 @@ namespace Shared.Defines
 
     public enum GameState
     {
+        None,
         Building,
         Execute,
         ExecutePause

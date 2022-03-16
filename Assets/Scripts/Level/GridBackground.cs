@@ -11,9 +11,8 @@ public class GridBackground : Singleton<GridBackground>
     [SerializeField]
     int gridWidth, gridHeight = -1;
 
-    void Awake()
+    protected override void AwakeSingelton()
     {
-        // TODO add checks for the vars
 
         gameObject.transform.position = Vector3.zero;
 

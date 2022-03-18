@@ -5,70 +5,17 @@ using UnityEngine.SceneManagement;
 using Core.Singleton;
 using Shared.Defines;
 
-public class LevelUI : Singleton<LevelUI>
+public class UI_Level : Singleton<UI_Level>
 {   
-    // General
-    [SerializeField]
-    Button btnMainMenu;
-
     // Game Controll buttons
     [SerializeField]
     Button btnExecute, btnRevert, btnPause;
     
-    // Level Solved Overlay
-    [SerializeField]
-    Button btnMenuInLSOverlay, btnReplay, btnNextLevel;
-
-
     [SerializeField]
     Canvas canLvlSolevdOverlay;
 
     GameState prevGameState = GameState.None;
 
-    void Start()
-    {
-        //// Add anonymus methods to the button on click events ////
-
-        // General Buttons
-        btnMainMenu.onClick.AddListener(() => {
-            SceneTransManager.Instance.LoadScene("MainMenu");
-        });
-        
-        // Game Crontroll Button
-
-        // Execute
-        btnExecute.onClick.AddListener(() =>{
-            GameManager.Instance.SetGameState(GameState.Execute);
-        });
-
-        // Pause
-        btnPause.onClick.AddListener(() =>{
-            GameManager.Instance.SetGameState(GameState.ExecutePause);
-        });
-
-        // Revert
-        btnRevert.onClick.AddListener(() =>{
-            GameManager.Instance.SetGameState(GameState.Building);
-        });
-
-        // Level Solved Overlay
-
-        // Menu
-        btnMenuInLSOverlay.onClick.AddListener(() => {
-            SceneTransManager.Instance.LoadScene("LevelMenu");
-        });
-
-        // Replay
-        btnReplay.onClick.AddListener(() => {
-            SceneTransManager.Instance.LoadScene(SceneManager.GetActiveScene().name);
-        });
-
-        // NextLevel
-        btnNextLevel.onClick.AddListener(() => {
-            // TODO make next level button function
-            Debug.LogWarning("Next Level currently unsupported");
-        });
-    }
 
     void Update()
     {

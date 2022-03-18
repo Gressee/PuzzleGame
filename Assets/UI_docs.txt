@@ -1,0 +1,8 @@
+UI Rules:
+    1. Every UI element that us used at least twice 
+        becomes a Prefab.
+    2. Every Button gets its own script in that the 
+        button function is coded.
+    3. Canvases get named  "UI_SomeName"
+    4. If in a scene a script for ui is needed that can't be
+        placed in a button the canvas gets a script named like the canvas.

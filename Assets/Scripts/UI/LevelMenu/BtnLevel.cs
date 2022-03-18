@@ -6,8 +6,9 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using Core.Singleton;
 
-public class LevelMenuBtn : MonoBehaviour
+public class BtnLevel : MonoBehaviour
 {
+    [SerializeField]
     int levelNum;
 
     void Start()
@@ -25,14 +26,8 @@ public class LevelMenuBtn : MonoBehaviour
             Debug.Log($"Change Scene to \"{sceneName}\"");
             SceneTransManager.Instance.LoadScene(sceneName);
         });
-    }
 
-
-    public void Init(int lvlNum)
-    {
-        levelNum = lvlNum;
-        gameObject.name = $"LevelMenuBtn_{levelNum}";
         gameObject.GetComponentInChildren<TextMeshProUGUI>().text = levelNum.ToString();
+        gameObject.name = $"BtnLevelMenu_{levelNum}";
     }
-
 }

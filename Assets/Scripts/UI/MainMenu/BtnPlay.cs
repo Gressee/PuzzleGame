@@ -2,19 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using Core.Singleton;
 
-public class MainMenuUI : MonoBehaviour
+public class BtnPlay : MonoBehaviour
 {
-    [SerializeField]
-    Button btnPlay;
-
     void Start()
     {
-        btnPlay.onClick.AddListener(() => {
+        gameObject.GetComponent<Button>().onClick.AddListener(() => {
             SceneTransManager.Instance.LoadScene("LevelMenu");
         });
     }
-    
 }

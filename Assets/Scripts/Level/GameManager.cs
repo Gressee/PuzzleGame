@@ -55,7 +55,7 @@ public class GameManager : Singleton<GameManager>
                 // Check if the level has been solved in the last turn
                 if (CheckLevelSolved())
                 {
-                    LevelUI.Instance.SpawnLevelSolvedOverlay();
+                    UI_Level.Instance.SpawnLevelSolvedOverlay();
                 }
                 else
                 {

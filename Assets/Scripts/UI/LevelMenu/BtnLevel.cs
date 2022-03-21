@@ -9,6 +9,9 @@ using Core.Singleton;
 public class BtnLevel : MonoBehaviour
 {
     [SerializeField]
+    char levelPack;
+
+    [SerializeField]
     int levelNum;
 
     void Start()
@@ -21,9 +24,8 @@ public class BtnLevel : MonoBehaviour
                 sceneName = "0" + sceneName;
             }
 
-            sceneName = "Level_" + sceneName;
+            sceneName = $"Level_{levelPack}_{sceneName}";
 
-            Debug.Log($"Change Scene to \"{sceneName}\"");
             SceneTransManager.Instance.LoadScene(sceneName);
         });
 

@@ -330,15 +330,18 @@ public class Piece : MonoBehaviour
     
     void SetBroken()
     {
-        if (broken == false)
+        if (GameManager.Instance.CurrentGameState == GameState.Execute)
         {
-            broken = true;
-            
-            sprite.SetActive(false);
-            spriteBroken.SetActive(true);
+            if (broken == false)
+            {
+                broken = true;
+                
+                sprite.SetActive(false);
+                spriteBroken.SetActive(true);
 
-            // Stop all animations
-            currentTurnActions = new List<PieceTurn>();
+                // Stop all animations
+                currentTurnActions = new List<PieceTurn>();
+            }
         }
     }
 

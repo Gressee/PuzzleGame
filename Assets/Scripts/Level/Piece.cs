@@ -9,7 +9,7 @@ public class Piece : MonoBehaviour
 {
 
     [SerializeField]
-    GameObject sprite, spriteBroken;
+    GameObject spriteContainer, sprite, spriteBroken;
 
     List<PieceTurn> currentTurnActions = new List<PieceTurn>();
     
@@ -56,13 +56,13 @@ public class Piece : MonoBehaviour
         {
             gridPos = null;
             startPos = pos;
-            SetTransform(position: pos, rotation: DirUtils.DirInAngle(dir));
+            SetPieceTransform(position: pos, rotation: DirUtils.DirInAngle(dir));
         }
         else
         {
             gridPos = Utils.RoundVec2(pos);
             startPos = pos;
-            SetTransform(position: pos, rotation: DirUtils.DirInAngle(dir));
+            SetPieceTransform(position: pos, rotation: DirUtils.DirInAngle(dir));
         }
 
     }
@@ -80,7 +80,7 @@ public class Piece : MonoBehaviour
             {
                 if (pt != null)
                 {
-                    pt.Update(gameObject);
+                    pt.Update();
                 }
             }
         }
@@ -153,7 +153,7 @@ public class Piece : MonoBehaviour
                 // Animation
                 newGridPos = possiblePos;
                 currentTurnActions.Add(new PieceTranslate(
-                    GameManager.Instance.TurnTime, currentGridPos, newGridPos
+                    this, GameManager.Instance.TurnTime, currentGridPos, newGridPos
                 ));
             }
         }
@@ -172,7 +172,7 @@ public class Piece : MonoBehaviour
                             // Animation
                             newGridPos = possiblePos;
                             currentTurnActions.Add(new PieceTranslate(
-                                GameManager.Instance.TurnTime, currentGridPos, newGridPos
+                                this, GameManager.Instance.TurnTime, currentGridPos, newGridPos
                             ));
                         }
                     }
@@ -183,6 +183,7 @@ public class Piece : MonoBehaviour
                     // Rotation should happen everytime
                     newMovingDir = ((TileRedirect)tile).redirectionDir;
                     currentTurnActions.Add(new PieceRotate(
+                        this,
                         GameManager.Instance.TurnTime/7,
                         DirUtils.DirInAngle(movingDir),
                         DirUtils.DirInAngle(newMovingDir)
@@ -194,7 +195,7 @@ public class Piece : MonoBehaviour
                     {
                         newGridPos = possiblePos;
                         currentTurnActions.Add(new PieceTranslate(
-                            GameManager.Instance.TurnTime, currentGridPos, newGridPos
+                            this, GameManager.Instance.TurnTime, currentGridPos, newGridPos
                         ));
 
                     }
@@ -215,7 +216,7 @@ public class Piece : MonoBehaviour
                             // Animation
                             newGridPos = possiblePos;
                             currentTurnActions.Add(new PieceTranslate(
-                                GameManager.Instance.TurnTime, currentGridPos, newGridPos
+                                this, GameManager.Instance.TurnTime, currentGridPos, newGridPos
                             ));
                         }
                     }
@@ -234,7 +235,7 @@ public class Piece : MonoBehaviour
 
                         // Animation
                         currentTurnActions.Add(new PieceTeleport(
-                            GameManager.Instance.TurnTime, currentGridPos, newGridPos, Vector2.one, Vector2.one/4
+                            this, GameManager.Instance.TurnTime, currentGridPos, newGridPos, Vector2.one, Vector2.one/4
                         ));
                     }
                 break;
@@ -319,7 +320,7 @@ public class Piece : MonoBehaviour
         // Return to the state before the execution
         gridPos = preExecutionPos;
         movingDir = preExecutionDir;
-        SetTransform(position: ((Vector2?)gridPos).GetValueOrDefault(startPos), rotation: DirUtils.DirInAngle(movingDir), scale: Vector2.one);
+        SetPieceTransform(position: ((Vector2?)gridPos).GetValueOrDefault(startPos), rotation: DirUtils.DirInAngle(movingDir), scale: Vector2.one);
 
         // Make the piece unbroken if it might have beed broken
         SetUnbroken();
@@ -371,7 +372,7 @@ public class Piece : MonoBehaviour
         // Go to mouse position
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 target = new Vector2(mousePos.x, mousePos.y);
-        SetTransform(position: target, useDragOffset: true);
+        SetPieceTransform(position: target, useDragOffset: true);
     }
 
     void EndDrag()
@@ -392,7 +393,7 @@ public class Piece : MonoBehaviour
             {
                 // Piece can move onto grid
                 gridPos = pos;
-                SetTransform(position: pos);
+                SetPieceTransform(position: pos);
                 return;
             }
         }
@@ -402,16 +403,23 @@ public class Piece : MonoBehaviour
         // The start position must be outside the grid because a non replaceable piece wouldnt be 
         // draged at first
         gridPos = null; // is not on grid
-        SetTransform(position: startPos);
+        SetPieceTransform(position: startPos);
     }
 
 
     //// OTHER ////
 
-    void SetTransform(Vector2? position = null, float? rotation = null, Vector2? scale = null, bool useDragOffset = false)
+    public void SetPieceTransform(Vector2? position = null, float? rotation = null, Vector2? scale = null, bool useDragOffset = false)
     {
         // Everything is in local coords relative to the parent object that holds 
         // all the pieces
+
+        // IMPORTANT for the POSITION and ROTATION the Piece gameObject is used
+        // but for the SCALE the SPRITE-Container gameObject (child of Piece) is used
+        // This is done so the collider component of the piece is always
+        // at the same scale.
+        // This is important so the collision of pices isn't dependend on
+        // PieceTurn Animations, that may chnage during development
 
         // Position
         // z=0 because the correct z value for this layer is set in the parent object
@@ -435,7 +443,7 @@ public class Piece : MonoBehaviour
         if (scale != null)
         {
             Vector2 s = scale.GetValueOrDefault(Vector2.one);
-            transform.localScale = new Vector3(s.x, s.y, 1);
+            spriteContainer.transform.localScale = new Vector3(s.x, s.y, 1);
         }
     }
 }
@@ -448,31 +456,22 @@ public class Piece : MonoBehaviour
 
 abstract class PieceTurn
 {
+    protected Piece piece;    
     protected float duration;
-    protected float startTime;
 
-    // TODO all derived classes should not interact with the gameobject transform
-    // directly and instead use the method in the piece call for manipulation the
-    // transform because of layers ...
-    // (see todo in piece)
-
-    public PieceTurn(float duration)
+    public PieceTurn(Piece piece, float duration)
     {
+        this.piece = piece;
         this.duration = duration;
-        // Because this animation starts always at the beginning of a turn
-        startTime = GameManager.Instance.timeSinceLastTurn;
     }
 
-    public virtual void Update(GameObject gameObject)
+    public virtual void Update()
     {
         // REMEMBER TO CALL THIS TO ACUTALLY UPDATE THE GAMEOBJECT
 
-        // Use:
-        //  (GameManager.Instance.timeSinceLastTurn - startTime)
-        // to get how much time has passed since the start of the turn
     }
 
-    public virtual void SetTargetValues(GameObject gameObject)
+    public virtual void SetTargetValues()
     {
         // This can be used to make sure the values on the 
         // unity gameObject are exactly the target ones
@@ -487,33 +486,34 @@ class PieceTranslate: PieceTurn
 
     Vector2 startPos, targetPos;
 
-    public PieceTranslate(float duration, Vector2 startPos, Vector2 targetPos) : base(duration)
+    public PieceTranslate(Piece piece, float duration, Vector2 startPos, Vector2 targetPos) : base(piece, duration)
     {   
         this.startPos = startPos;
         this.targetPos = targetPos;
     }
 
-    public override void Update(GameObject gameObject)
+    public override void Update()
     {
         // Check if the duration time is already reched
-        if (GameManager.Instance.timeSinceLastTurn - startTime < duration)
+        if (GameManager.Instance.timeSinceLastTurn < duration)
         {
             Vector2 dir = targetPos - startPos;
-            Vector3 p = startPos + dir * (GameManager.Instance.timeSinceLastTurn - startTime)/duration;
+            Vector3 p = startPos + dir * (GameManager.Instance.timeSinceLastTurn)/duration;
             p.z = Layer.Pieces;
-            gameObject.transform.position = p;
+
+            piece.SetPieceTransform(position: p);
         }
         else
         {
-            SetTargetValues(gameObject);
+            SetTargetValues();
         }
     }
 
-    public override void SetTargetValues(GameObject gameObject)
+    public override void SetTargetValues()
     {
         Vector3 p = targetPos;
         p.z = Layer.Pieces;
-        gameObject.transform.position = p;
+        piece.SetPieceTransform(position: p);
     }
 }
 
@@ -526,7 +526,7 @@ class PieceTeleport: PieceTurn
     Vector2 startPos, targetPos;
     Vector2 maxScale, minScale;
 
-    public PieceTeleport(float duration, Vector2 startPos, Vector2 targetPos, Vector2 maxScale, Vector2 minScale) :  base(duration)
+    public PieceTeleport(Piece piece, float duration, Vector2 startPos, Vector2 targetPos, Vector2 maxScale, Vector2 minScale) :  base(piece, duration)
     {
         this.startPos = startPos;
         this.targetPos = targetPos;
@@ -535,20 +535,20 @@ class PieceTeleport: PieceTurn
         this.minScale = minScale;
     }
 
-    public override void Update(GameObject gameObject)
+    public override void Update()
     {
         // Getting smaller
-        if (GameManager.Instance.timeSinceLastTurn -  startTime < duration/2)
+        if (GameManager.Instance.timeSinceLastTurn < duration/2)
         {
             if (!setStartPos)
             {
                 setStartPos = true;
                 Vector3 p = startPos;
                 p.z = Layer.Pieces;
-                gameObject.transform.position = p;
+                piece.SetPieceTransform(position: p);
             }
             Vector2 scaleDir = minScale - maxScale;
-            gameObject.transform.localScale = maxScale + scaleDir * (GameManager.Instance.timeSinceLastTurn - startTime)/(duration/2);
+            piece.SetPieceTransform(scale: maxScale + scaleDir * (GameManager.Instance.timeSinceLastTurn)/(duration/2));
         }
         // Getting bigger again
         else
@@ -558,10 +558,10 @@ class PieceTeleport: PieceTurn
                 changedPos = true;
                 Vector3 p = targetPos;
                 p.z = Layer.Pieces;
-                gameObject.transform.position = p;
+                piece.SetPieceTransform(position: p);
             }
             Vector2 scaleDir = maxScale - minScale;
-            gameObject.transform.localScale = minScale + scaleDir * (GameManager.Instance.timeSinceLastTurn - startTime - duration/2)/(duration/2);
+            piece.SetPieceTransform(scale: minScale + scaleDir * (GameManager.Instance.timeSinceLastTurn - duration/2)/(duration/2));
         }
 
     }
@@ -572,16 +572,16 @@ class PieceRotate: PieceTurn
 {
     float startRot, targetRot;
 
-    public PieceRotate(float duration, float startRot, float targetRot) : base(duration)
+    public PieceRotate(Piece piece, float duration, float startRot, float targetRot) : base(piece, duration)
     {
         this.startRot = startRot;
         this.targetRot = targetRot;
     }
 
-    public override void Update(GameObject gameObject)
+    public override void Update()
     {
         // Check if the duration time is already reched
-        if (GameManager.Instance.timeSinceLastTurn - startTime < duration)
+        if (GameManager.Instance.timeSinceLastTurn < duration)
         {   
             /*
             float rotDir = targetRot - startRot;
@@ -613,20 +613,20 @@ class PieceRotate: PieceTurn
                 }
             }
 
-            float newAngle = angleToTurn/duration * (GameManager.Instance.timeSinceLastTurn - startTime) + startRot;
+            float newAngle = angleToTurn/duration * (GameManager.Instance.timeSinceLastTurn) + startRot;
             if (newAngle >= 360) newAngle -= 360;
             if (newAngle < 0) newAngle += 360;
-            gameObject.transform.eulerAngles = new Vector3(0, 0, newAngle);
+            piece.SetPieceTransform(rotation: newAngle);
         }
         else
         {
-            SetTargetValues(gameObject);
+            SetTargetValues();
         }
     }
     
-    public override void SetTargetValues(GameObject gameObject)
+    public override void SetTargetValues()
     {
-        gameObject.transform.eulerAngles = new Vector3(0, 0, targetRot);
+        piece.SetPieceTransform(rotation: targetRot);
     }
 }
 

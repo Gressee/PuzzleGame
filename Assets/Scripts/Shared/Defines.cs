@@ -42,4 +42,12 @@ namespace Shared.Defines
         Execute,
         ExecutePause
     }
+
+    public enum Sound
+    {
+        // Buttons
+        BtnClick,
+
+        SceneTransition
+    }
 }
